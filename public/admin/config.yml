@@ -1,9 +1,11 @@
 backend:
   name: github
-  repo: your-username/hamlamadong # Replace with your actual repo
+  repo: hamdong/hamlamadong
   branch: main
+  base_url: https://hamlamadong-auth.hamlamadong.workers.dev
+  auth_endpoint: /auth
 
-media_folder: 'public/assets' # For small icons/local images
+media_folder: 'public/assets'
 public_folder: '/assets'
 
 collections:
