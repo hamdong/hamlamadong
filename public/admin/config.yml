@@ -1,3 +1,5 @@
+local_backend: true
+
 backend:
   name: github
   repo: hamdong/hamlamadong
@@ -5,49 +7,26 @@ backend:
   base_url: https://hamlamadong-auth.hamlamadong.workers.dev
   auth_endpoint: /auth
 
+# Media settings
 media_folder: 'public/assets'
 public_folder: '/assets'
 
 collections:
   - name: 'blog'
-    label: 'Journal'
+    label: 'Blog'
     folder: 'src/content/blog'
     create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
-      - { label: 'Body', name: 'body', widget: 'markdown' }
-
-  - name: 'art'
-    label: 'Art Gallery'
-    folder: 'src/content/art'
-    create: true
-    fields:
-      - { label: 'Piece Name', name: 'title', widget: 'string' }
+      - { label: 'Description', name: 'description', widget: 'string' }
       - {
-          label: 'Image URL',
+          label: 'Featured Image',
           name: 'image',
-          widget: 'string',
-          hint: 'Paste your Cloudflare R2 URL here',
+          widget: 'image',
+          required: false,
         }
-      - {
-          label: 'Medium',
-          name: 'medium',
-          widget: 'select',
-          options: ['Digital', 'Oil', 'Sketch', 'Pixel Art'],
-        }
-      - { label: 'Description', name: 'body', widget: 'markdown' }
-
-  - name: 'music'
-    label: 'Playlist'
-    folder: 'src/content/music'
-    create: true
-    fields:
-      - { label: 'Track Title', name: 'title', widget: 'string' }
-      - {
-          label: 'Audio URL',
-          name: 'audio',
-          widget: 'string',
-          hint: 'Link to your .mp3 in R2',
-        }
-      - { label: 'Mood', name: 'mood', widget: 'string' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: true }
+      - { label: 'Tags', name: 'tags', widget: 'list', default: ['Journal'] }
+      - { label: 'Body', name: 'body', widget: 'markdown' }

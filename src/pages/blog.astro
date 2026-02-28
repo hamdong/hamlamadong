@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+// Combined fetching, filtering, and sorting into one cleaner chain
+const posts = (await getCollection('blog', ({ data }) => !import.meta.env.PROD || !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="Intel Stream">
+  <div class="stream-shell">
+    <header class="stream-header">
+      <h2>Blog</h2>
+    </header>
+
+    <div class="stream-list">
+      {posts.map(post => (
+        <a href={`/blog/${post.slug}`} class="stream-item">
+          <time class="mono-date">
+            {post.data.date.toLocaleDateString('en-GB').replace(/\//g, '.')}
+          </time>
+
+          <div class="item-content">
+            <span class="item-title">{post.data.title}</span>
+            {post.data.tags?.[0] && <span class="item-tag">{post.data.tags[0]}</span>}
+          </div>
+        </a>
+      ))}
+
+      {!posts.length && <p class="mono-text">No blogs</p>}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .stream-shell { max-width: 800px; margin: 0 auto; }
+
+  .stream-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(90deg, var(--aqua-glow), transparent) 1;
+  }
+
+  .stream-header h1 {
+    font-family: var(--font-pixel);
+    font-size: 2.2rem;
+    color: #fff;
+    margin: 0;
+    letter-spacing: 2px;
+  }
+
+  .stream-list { display: flex; flex-direction: column; gap: 4px; }
+
+  .stream-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    align-items: center;
+    padding: 10px 12px;
+    text-decoration: none;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+    transition: 0.2s ease;
+  }
+
+  .stream-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0%; height: 1px;
+    background: var(--aqua-glow);
+    box-shadow: 0 0 8px var(--aqua-glow);
+    transition: width 0.3s ease;
+  }
+
+  .stream-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(8px);
+  }
+
+  .stream-item:hover::after { width: 100%; }
+
+  .mono-date {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--leaf-green);
+    opacity: 0.8;
+  }
+
+  .item-content { display: flex; align-items: baseline; gap: 15px; }
+
+  .item-title {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #fff;
+  }
+
+  .stream-item:hover .item-title {
+    color: var(--aqua-glow);
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+  }
+
+  .item-tag {
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    color: var(--aqua-glow);
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+</style>

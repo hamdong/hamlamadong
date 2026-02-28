@@ -1,50 +1,44 @@
 :root {
-  --sidebar-width: 240px;
-  --bg-color: #ffffff;
-  --text-color: #333;
-  --border-color: #ddd;
+  --font-pixel: 'VT323', monospace;
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+  --aqua-glow: #00f2ff;
+  --leaf-green: #22c55e;
+  --window-glass: rgba(0, 40, 100, 0.3);
+  --border-shine: rgba(255, 255, 255, 0.3);
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-
-.app-container {
-  display: flex;
+  padding: 20px;
+  font-family: var(--font-sans);
+  color: #fff;
   min-height: 100vh;
+  background: linear-gradient(
+      180deg,
+      #001a4d 0%,
+      #0066cc 40%,
+      #00ccff 70%,
+      var(--leaf-green) 100%
+    )
+    fixed;
 }
 
-.sidebar {
-  width: var(--sidebar-width);
-  border-right: 1px solid var(--border-color);
-  padding: 2rem;
-  background: #f9f9f9;
+/* Persistent Glass Layer */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    url('https://www.transparenttextures.com/patterns/p6.png'),
+    radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.1), transparent 40%);
+  pointer-events: none;
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin: 1rem 0;
-}
-
-main {
-  flex: 1;
-  padding: 3rem;
-  max-width: 800px;
-}
-
-.audio-player {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border-color);
-}
-
-audio {
-  width: 100%;
+.mono-text {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--aqua-glow);
+  text-shadow: 0 0 5px rgba(0, 242, 255, 0.6);
 }
