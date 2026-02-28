@@ -1,0 +1,40 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Hamlamadong</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="sidebar" transition:persist>
+        <header>
+          <h2>Hamlamadong</h2>
+        </header>
+        
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/art">Art</a></li>
+          </ul>
+        </nav>
+
+        <div class="audio-player">
+          <p>Music Player</p>
+          <audio controls>
+            <source src="" type="audio/mpeg">
+          </audio>
+        </div>
+      </aside>
+
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

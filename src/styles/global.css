@@ -1,0 +1,50 @@
+:root {
+  --sidebar-width: 240px;
+  --bg-color: #ffffff;
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  border-right: 1px solid var(--border-color);
+  padding: 2rem;
+  background: #f9f9f9;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 1rem 0;
+}
+
+main {
+  flex: 1;
+  padding: 3rem;
+  max-width: 800px;
+}
+
+.audio-player {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+audio {
+  width: 100%;
+}
