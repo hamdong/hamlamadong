@@ -1,43 +1,60 @@
-# Astro Starter Kit: Minimal
+# Hamlamadong
 
-```sh
-npm create astro@latest -- --template minimal
-```
+My personal website made for blogging and expressing myself.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Tech Stack
+
+- **Framework**: Astro 4.x
+- **CMS**: Sveltia
+- **Styling**: Tailwind CSS v4
+- **Fonts**: Inter (headings/body), Space Mono (metadata)
+- **Content**: Markdown with frontmatter
 
 ## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
 
 ```text
 /
 ├── public/
+│   ├── admin/          # CMS configuration
+│   └── assets/         # Static assets
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/     # Reusable Astro components
+│   ├── content/        # Markdown blog posts
+│   ├── layouts/        # Layout templates
+│   ├── pages/          # Route pages
+│   └── styles/         # Global styles
+├── astro.config.mjs    # Astro configuration
+├── tsconfig.json       # TypeScript configuration
+└── package.json        # Project dependencies
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+All commands are run from the root of the project:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| Command           | Action                                     |
+| :---------------- | :----------------------------------------- |
+| `npm install`     | Install dependencies                       |
+| `npm run dev`     | Start local dev server at `localhost:4321` |
+| `npm run build`   | Build production site to `./dist/`         |
+| `npm run preview` | Preview build locally before deploying     |
 
-## 👀 Want to learn more?
+## 🎨 Customization
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Colors
+
+The color scheme is defined in `src/styles/global.css` with a blue-green gradient background. Adjust the `@theme` and gradient values to customize.
+
+### Fonts
+
+- Headings: Inter (font-sans)
+- Monospace: Space Mono
+- Change font imports in `src/layouts/Layout.astro`
+
+### Blog Posts
+
+Add new markdown files to `src/content/blog/` with the naming convention `YYYY-MM-DD-title.md`. Update `src/content/config.ts` to modify the content collection schema.
+
+## 📝 License
+
+Built with Astro. See [astro.build](https://astro.build) for more information.

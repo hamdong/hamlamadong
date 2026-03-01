@@ -1,0 +1,216 @@
+<div id="fish-container" class="fixed inset-0 pointer-events-none -z-15 overflow-hidden">
+  <canvas id="fish-canvas"></canvas>
+</div>
+
+<script>
+  // --- TYPE DEFINITION ---
+  declare global {
+    interface Window {
+      FishEcosystem: {
+        school: any[];
+        mouse: { x: number; y: number };
+        lastTime: number;
+        isPaused: boolean;
+      };
+    }
+  }
+
+  // --- PERSISTENT STATE ---
+  window.FishEcosystem = window.FishEcosystem || {
+    school: [],
+    mouse: { x: -2000, y: -2000 },
+    lastTime: performance.now(),
+    isPaused: false
+  };
+
+  let fishAnimationId: number | null = null;
+  let fishListeners: { target: EventTarget, type: string, fn: any }[] = [];
+
+  const FISH_COUNT = 6;
+  const SPECIES = [
+    { name: 'Electric Neon', colors: ['#00f2ff', '#0066ff', '#ffffff'], w: 4.5, h: 0.7, tail: 0.45, fork: 0.6, speed: 1.4 },
+    { name: 'Lime Barb', colors: ['#4ade80', '#22c55e', '#ffffff'], w: 3.2, h: 1.1, tail: 0.5, fork: 0.5, speed: 1.0 },
+    { name: 'Sunburst Gold', colors: ['#fbbf24', '#f59e0b', '#ffffff'], w: 3.0, h: 1.3, tail: 0.55, fork: 0.4, speed: 0.8 },
+    { name: 'Cobalt Ram', colors: ['#3b82f6', '#1d4ed8', '#ffffff'], w: 2.8, h: 1.5, tail: 0.5, fork: 0.4, speed: 0.8 },
+    { name: 'Plasma Guppy', colors: ['#d946ef', '#701a75', '#ffffff'], w: 3.5, h: 0.8, tail: 0.7, fork: 0.8, speed: 1.1 }
+  ];
+
+  function initFish() {
+    const canvas = document.getElementById('fish-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    class Fish {
+      x: number; y: number; angle: number; 
+      velocity: number = 0; targetVelocity: number = 0.5;
+      state: 'glide' | 'burst' | 'idle' = 'glide';
+      stateTimer: number = 0;
+      isFleeing: boolean = false; 
+      size: number; depth: number; species: typeof SPECIES[0]; 
+      tailCycle: number = Math.random() * 100;
+
+      constructor() {
+        this.species = SPECIES[Math.floor(Math.random() * SPECIES.length)];
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.angle = Math.random() * Math.PI * 2;
+        this.depth = 0.6 + Math.random() * 0.4;
+        this.size = (12 + Math.random() * 4) * this.depth;
+        this.pickNewState();
+      }
+
+      pickNewState() {
+        this.isFleeing = false; 
+        const r = Math.random();
+        if (r < 0.3) { this.state = 'idle'; this.targetVelocity = 0.05; this.stateTimer = 100 + Math.random() * 150; }
+        else if (r < 0.5) { this.state = 'burst'; this.targetVelocity = 2.5; this.stateTimer = 40 + Math.random() * 40; }
+        else { this.state = 'glide'; this.targetVelocity = 0.6 + Math.random() * 0.4; this.stateTimer = 200 + Math.random() * 250; }
+        this.targetVelocity *= this.species.speed;
+      }
+
+      update(w: number, h: number, dt: number) {
+        const eco = window.FishEcosystem;
+        const dx = this.x - eco.mouse.x;
+        const dy = this.y - eco.mouse.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (!this.isFleeing && distSq < 6400) {
+          this.state = 'burst'; 
+          this.isFleeing = true; 
+          this.targetVelocity = 5.0; 
+          this.stateTimer = 45; 
+          this.angle = Math.atan2(dy, dx); 
+        }
+
+        this.velocity += (this.targetVelocity - this.velocity) * (0.04 * dt);
+        this.stateTimer -= (1 * dt);
+        if (this.stateTimer <= 0) this.pickNewState();
+
+        this.x += Math.cos(this.angle) * (this.velocity * dt);
+        this.y += Math.sin(this.angle) * (this.velocity * dt);
+        this.tailCycle += (0.09 + this.velocity * 0.16) * dt;
+
+        const margin = 50;
+        if (this.x < -margin) this.x = w + margin;
+        if (this.x > w + margin) this.x = -margin;
+        if (this.y < -margin) this.y = h + margin;
+        if (this.y > h + margin) this.y = -margin;
+      }
+
+      draw(context: CanvasRenderingContext2D) {
+        const s = this.species;
+        const w = this.size * s.w;
+        const h = this.size * s.h;
+        context.save();
+        context.translate(this.x, this.y);
+        context.shadowBlur = 10 * this.depth;
+        context.shadowColor = s.colors[0];
+        if (Math.cos(this.angle) < 0) context.scale(-1, 1);
+        context.rotate(Math.asin(Math.sin(this.angle)) * 0.2);
+        const tCycle = this.tailCycle;
+        const foreshorten = Math.abs(Math.cos(tCycle)) * 0.5 + 0.5;
+        context.save();
+        context.translate(-w/2 + 2, 0); 
+        context.scale(foreshorten, 1); 
+        context.globalAlpha = 0.5 * this.depth;
+        context.fillStyle = s.colors[0];
+        context.beginPath();
+        context.moveTo(0, 0);
+        context.quadraticCurveTo(-w*s.tail, -h, -w*s.tail, 0);
+        context.quadraticCurveTo(-w*s.tail, h, 0, 0);
+        context.fill();
+        context.restore();
+        context.globalAlpha = 0.9 * this.depth;
+        context.fillStyle = s.colors[1];
+        context.beginPath();
+        context.ellipse(0, 0, w/2, h/2, 0, 0, Math.PI*2);
+        context.fill();
+        context.fillStyle = '#000';
+        context.beginPath();
+        context.arc(w/4, -h/12, 1.6, 0, Math.PI * 2);
+        context.fill();
+        context.restore();
+      }
+    }
+
+    const eco = window.FishEcosystem;
+
+    // --- INITIALIZE SCHOOL ---
+    if (eco.school.length === 0) {
+      eco.school = Array.from({ length: FISH_COUNT }, () => new Fish());
+    }
+
+    const animate = (now: number) => {
+      if (eco.isPaused) return;
+
+      // DELTA TIME CALCULATION
+      let dt = (now - eco.lastTime) / 16.66;
+      
+      // THE SANITY GUARD: If we were gone for a while, just pretend 1 frame passed.
+      // This stops the "Tab-Switch Freak Out."
+      if (dt > 6) dt = 1;
+
+      eco.lastTime = now;
+
+      ctx.clearRect(0, 0, width, height);
+      eco.school.forEach(f => { 
+        f.update(width, height, dt); 
+        f.draw(ctx); 
+      });
+      
+      fishAnimationId = requestAnimationFrame(animate);
+    };
+
+    // --- INTERSECTION OBSERVER ---
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasPaused = eco.isPaused;
+        eco.isPaused = !entry.isIntersecting;
+
+        // Restart loop if we just became visible again
+        if (entry.isIntersecting && wasPaused) {
+          eco.lastTime = performance.now(); 
+          requestAnimationFrame(animate);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(canvas);
+
+    // --- MANUAL KICKSTART ---
+    // This ensures the loop starts on the very first page load.
+    eco.lastTime = performance.now();
+    animate(performance.now());
+
+    // --- LISTENERS ---
+    const addListener = (target: EventTarget, type: string, fn: any) => {
+      target.addEventListener(type, fn);
+      fishListeners.push({ target, type, fn });
+    };
+
+    addListener(window, 'mousemove', (e: MouseEvent) => { 
+      eco.mouse.x = e.clientX; 
+      eco.mouse.y = e.clientY; 
+    });
+    
+    addListener(window, 'resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+  }
+
+  function cleanup() {
+    if (fishAnimationId) cancelAnimationFrame(fishAnimationId);
+    fishListeners.forEach(({ target, type, fn }) => target.removeEventListener(type, fn));
+    fishListeners = [];
+    // Note: We don't wipe the FishEcosystem here so the fish stay persistent!
+  }
+
+  // Astro Lifecycle Hooks
+  document.addEventListener('astro:page-load', () => { cleanup(); initFish(); });
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

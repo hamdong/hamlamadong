@@ -1,0 +1,179 @@
+<div id="cloud-container" class="absolute top-0 left-0 w-full h-[160px] pointer-events-none -z-20 overflow-hidden select-none">
+  <canvas id="cloud-canvas" class="blur-[1.5px]"></canvas>
+</div>
+
+<script>
+  // --- TYPE DEFINITION ---
+  declare global {
+    interface Window {
+      CloudEcosystem: {
+        clouds: any[];
+        lastTime: number;
+        isPaused: boolean;
+      };
+    }
+  }
+
+  // --- PERSISTENT STATE ---
+  window.CloudEcosystem = window.CloudEcosystem || {
+    clouds: [],
+    lastTime: performance.now(),
+    isPaused: false
+  };
+
+  let cloudAnimationId: number | null = null;
+
+  function initClouds() {
+    const canvas = document.getElementById('cloud-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = 160;
+    const eco = window.CloudEcosystem;
+
+    class FrutigerAeroCloud {
+      x: number; y: number; scale: number; speed: number;
+      puffs: { relX: number, relY: number, rw: number, rh: number, op: number }[] = [];
+
+      constructor(spawnX: number, spawnY: number) {
+        this.scale = 0.25 + Math.random() * 0.55;
+        this.x = spawnX;
+        this.y = spawnY;
+        
+        // --- SLOW DRIFT ---
+        this.speed = (0.012 + Math.random() * 0.018) * (this.scale * 2.5);
+
+        const puffCount = 4 + Math.floor(Math.random() * 4);
+        const peakIndex = Math.floor(puffCount / 2);
+        
+        for (let i = 0; i < puffCount; i++) {
+          const dist = Math.abs(i - peakIndex);
+          const falloff = Math.max(0.3, 1.0 - (dist * 0.28));
+          this.puffs.push({
+            relX: (i - puffCount / 2) * (75 * this.scale),
+            relY: (dist * 4 * this.scale), 
+            rw: (90 + Math.random() * 50) * this.scale * falloff,
+            rh: (16 + Math.random() * 18) * this.scale * falloff,
+            op: 0.35 + (Math.random() * 0.1)
+          });
+        }
+      }
+
+      update(currentWidth: number, dt: number) {
+        this.x += this.speed * dt;
+        if (this.x > currentWidth + 400) this.x = -400;
+      }
+
+      draw(context: CanvasRenderingContext2D) {
+        context.save();
+        context.translate(this.x, this.y);
+        context.beginPath();
+        this.puffs.forEach(p => {
+          context.ellipse(p.relX, p.relY, p.rw, p.rh, 0, 0, Math.PI * 2);
+        });
+        
+        const mainGrad = context.createLinearGradient(0, -10 * this.scale, 0, 20 * this.scale);
+        mainGrad.addColorStop(0, `rgba(255, 255, 255, 0.65)`);
+        mainGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+        context.fillStyle = mainGrad;
+        context.fill();
+
+        context.globalCompositeOperation = 'source-atop';
+        this.puffs.forEach(p => {
+          const pGrad = context.createRadialGradient(p.relX, p.relY - p.rh * 0.3, 0, p.relX, p.relY, p.rw);
+          pGrad.addColorStop(0, `rgba(255, 255, 255, 0.5)`);
+          pGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+          context.fillStyle = pGrad;
+          context.beginPath();
+          context.ellipse(p.relX, p.relY, p.rw, p.rh, 0, 0, Math.PI * 2);
+          context.fill();
+        });
+
+        context.strokeStyle = `rgba(255, 255, 255, 0.45)`;
+        context.lineWidth = 0.8;
+        context.stroke();
+        context.restore();
+      }
+    }
+
+    function setup() {
+      width = canvas.width = window.innerWidth;
+      if (eco.clouds.length === 0) {
+        const lanes = [20, 50, 80];
+        const cols = 5; 
+        const colWidth = width / cols;
+
+        lanes.forEach((laneY) => {
+          for (let cIdx = 0; cIdx < cols; cIdx++) {
+            const weight = (cIdx + 1) / cols;
+            const spawnChance = 0.25 * weight; 
+            if (Math.random() < spawnChance) {
+              const startX = (cIdx * colWidth) + (Math.random() * (colWidth * 0.8));
+              const jitterY = (Math.random() - 0.5) * 8;
+              eco.clouds.push(new FrutigerAeroCloud(startX, laneY + jitterY));
+            }
+          }
+        });
+        if (eco.clouds.length < 2) setup();
+      }
+    }
+
+    function animate(now: number) {
+      if (eco.isPaused) return;
+
+      let dt = (now - eco.lastTime) / 16.66;
+      
+      // SAFETY CAP: Prevents clouds from teleporting if tab is inactive
+      if (dt > 6) dt = 1; 
+      
+      eco.lastTime = now;
+
+      ctx.clearRect(0, 0, width, height);
+      
+      eco.clouds.sort((a,b) => a.scale - b.scale).forEach(c => {
+        c.update(width, dt);
+        c.draw(ctx);
+      });
+      
+      cloudAnimationId = requestAnimationFrame(animate);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasPaused = eco.isPaused;
+        eco.isPaused = !entry.isIntersecting;
+        
+        if (entry.isIntersecting && wasPaused) {
+          eco.lastTime = performance.now();
+          requestAnimationFrame(animate);
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer.observe(canvas);
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+    });
+
+    setup();
+    // MANUAL KICKSTART: Ensures loop begins on first load
+    eco.lastTime = performance.now();
+    animate(performance.now());
+  }
+
+  function cleanup() {
+    if (cloudAnimationId) {
+      cancelAnimationFrame(cloudAnimationId);
+      cloudAnimationId = null;
+    }
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    cleanup();
+    initClouds(); 
+  });
+
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

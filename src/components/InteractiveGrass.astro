@@ -1,0 +1,187 @@
+<div id="grass-container" class="absolute bottom-0 left-0 w-full h-[180px] pointer-events-none -z-10 overflow-hidden">
+  <canvas id="grass-canvas"></canvas>
+</div>
+
+<script>
+  declare global {
+    interface Window {
+      GrassEcosystem: {
+        blades: any[];
+        mouse: { x: number; y: number };
+        currentWind: number;
+        windTarget: number;
+        lastTime: number;
+        isPaused: boolean;
+      };
+    }
+  }
+
+  window.GrassEcosystem = window.GrassEcosystem || {
+    blades: [],
+    mouse: { x: -2000, y: -2000 },
+    currentWind: 0,
+    windTarget: 0,
+    lastTime: performance.now(),
+    isPaused: false
+  };
+
+  let grassAnimationId: number | null = null;
+  let grassListeners: { target: EventTarget, type: string, fn: any }[] = [];
+
+  function initGrass() {
+    const canvas = document.getElementById('grass-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = 180;
+    const eco = window.GrassEcosystem;
+
+    class Blade {
+      x: number; h: number; angle: number; velocity: number;
+      color: string; thickness: number; stiffness: number;
+
+      constructor(x: number) {
+        this.x = x;
+        this.h = 60 + Math.random() * 90;
+        this.angle = 0;
+        this.velocity = 0;
+        this.thickness = 1.5 + Math.random() * 3.5;
+        this.stiffness = 0.03 + Math.random() * 0.05;
+        const colors = ['#16a34a', '#15803d', '#14532d', '#22c55e', '#052e16'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      update(dt: number, currentMouse: {x: number, y: number}) {
+        const dx = this.x - currentMouse.x;
+        
+        // Use window.innerHeight to find distance from the very bottom of the viewport
+        const bladeTopY = window.innerHeight - this.h;
+        const vertDist = Math.abs(currentMouse.y - bladeTopY);
+
+        let interactionForce = 0;
+        const horizontalRadius = 60; 
+        const verticalReach = 140;
+
+        if (Math.abs(dx) < horizontalRadius && vertDist < verticalReach) {
+            const forceStrength = (1 - Math.abs(dx) / horizontalRadius);
+            // Influence the velocity based on mouse movement direction
+            interactionForce = (dx / horizontalRadius) * 0.035 * forceStrength;
+        }
+
+        const acceleration = (eco.currentWind - this.angle) * this.stiffness + interactionForce;
+        this.velocity += acceleration * dt;
+        this.velocity *= Math.pow(0.85, dt); 
+        this.angle += this.velocity * dt;
+      }
+
+      draw(context: CanvasRenderingContext2D) {
+        const tipX = this.x + (this.angle * 60);
+        const tipY = height - this.h;
+        const midX = this.x + (this.angle * 25);
+        const midY = height - this.h / 2;
+
+        context.beginPath();
+        context.moveTo(this.x - this.thickness / 2, height);
+        context.lineTo(this.x + this.thickness / 2, height);
+        context.quadraticCurveTo(midX, midY, tipX, tipY);
+        context.fillStyle = this.color;
+        context.fill();
+      }
+    }
+
+    function setup() {
+      const oldWidth = width;
+      width = canvas.width = window.innerWidth;
+      if (eco.blades.length === 0) {
+        for (let i = 0; i < width; i += 4) {
+          eco.blades.push(new Blade(i + (Math.random() * 2)));
+        }
+      } else if (width > oldWidth) {
+        for (let i = oldWidth; i < width; i += 4) {
+          eco.blades.push(new Blade(i + (Math.random() * 2)));
+        }
+      }
+    }
+
+    function animate(now: number) {
+      if (eco.isPaused) return;
+      let dt = (now - eco.lastTime) / 16.66;
+      if (dt > 6) dt = 1; 
+      eco.lastTime = now;
+
+      // Wind
+      if (Math.abs(eco.currentWind - eco.windTarget) < 0.01) {
+        if (Math.random() < 0.005 * dt) eco.windTarget = (Math.random() - 0.5) * 0.4;
+        else eco.windTarget = 0;
+      }
+      eco.currentWind += (eco.windTarget - eco.currentWind) * 0.01 * dt;
+
+      ctx.clearRect(0, 0, width, height);
+      
+      // Cache global mouse for this frame to avoid mid-loop updates
+      const frameMouse = { x: eco.mouse.x, y: eco.mouse.y };
+      
+      eco.blades.forEach(b => {
+        b.update(dt, frameMouse);
+        b.draw(ctx);
+      });
+      grassAnimationId = requestAnimationFrame(animate);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasPaused = eco.isPaused;
+        eco.isPaused = !entry.isIntersecting;
+        if (entry.isIntersecting && wasPaused) {
+          eco.lastTime = performance.now();
+          requestAnimationFrame(animate);
+        }
+      });
+    }, { threshold: 0.1 });
+    observer.observe(canvas);
+
+    const onMouseMove = (e: MouseEvent) => {
+      eco.mouse.x = e.clientX;
+      eco.mouse.y = e.clientY;
+    };
+
+    const onMouseDown = (e: MouseEvent) => {
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      const groundY = window.innerHeight;
+      
+      eco.blades.forEach(blade => {
+        const dx = blade.x - clickX;
+        const dy = groundY - clickY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          const power = (1 - dist / 120) * 0.7;
+          blade.velocity += (dx > 0 ? 1.6 : -1.6) * power;
+        }
+      });
+    };
+
+    const addListener = (target: EventTarget, type: string, fn: any) => {
+      target.addEventListener(type, fn);
+      grassListeners.push({ target, type, fn });
+    };
+
+    addListener(window, 'mousemove', onMouseMove);
+    addListener(window, 'mousedown', onMouseDown);
+    addListener(window, 'resize', setup);
+    
+    setup();
+    eco.lastTime = performance.now();
+    animate(performance.now());
+  }
+
+  function cleanup() {
+    if (grassAnimationId) cancelAnimationFrame(grassAnimationId);
+    grassListeners.forEach(({ target, type, fn }) => target.removeEventListener(type, fn));
+    grassListeners = [];
+  }
+
+  document.addEventListener('astro:page-load', () => { cleanup(); initGrass(); });
+  document.addEventListener('astro:before-preparation', cleanup);
+</script>

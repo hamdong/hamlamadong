@@ -1,6 +1,10 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import InteractiveGrass from '../components/InteractiveGrass.astro';
+import CloudLayer from '../components/CloudLayer.astro';
+import FishTank from '../components/FishTank.astro';
 
 const { title = 'Hamlamadong' } = Astro.props;
 ---
@@ -16,15 +20,15 @@ const { title = 'Hamlamadong' } = Astro.props;
       rel="stylesheet"
     />
   </head>
-  <body class="font-sans">
+  <body class="relative font-sans">
+    <CloudLayer />
     <!-- Header with Title and Top Navigation -->
     <header class="mx-auto mt-5 mb-2.5 max-w-7xl px-4 sm:px-6">
       <div class="flex flex-col gap-4">
-        <a href="/" class="no-underline">
-          <h1 class="text-white text-3xl sm:text-4xl font-bold tracking-[2px]" style="font-family: 'Inter', sans-serif;">
-            HAMLAMADONG
-          </h1>
-        </a>
+        
+        <h1 class="text-white text-3xl sm:text-4xl font-bold tracking-[2px]" style="font-family: 'Inter', sans-serif;">
+          <a href="/" class="no-underline">HAMLAMADONG</a>
+        </h1>
         
         <!-- Top Navigation -->
         <nav class="flex flex-wrap gap-3 sm:gap-4">
@@ -44,6 +48,8 @@ const { title = 'Hamlamadong' } = Astro.props;
       </div>
     </header>
 
+    <FishTank />
+
     <!-- Main Content Container -->
     <div
       class="mx-auto mb-10 max-w-7xl px-4 sm:px-6"
@@ -53,8 +59,10 @@ const { title = 'Hamlamadong' } = Astro.props;
       <main class="w-full border border-white/10 rounded-lg overflow-hidden" transition:animate="fade">
         <div class="main-content w-full">
           <slot />
+          <Footer />
         </div>
       </main>
     </div>
+    <InteractiveGrass />
   </body>
 </html>

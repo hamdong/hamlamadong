@@ -1,0 +1,17 @@
+---
+const currentYear = new Date().getFullYear();
+const currentDate = new Date().toLocaleDateString('en-US').replace(/\//g, '.');
+---
+
+<footer class="border-t border-white/10 mt-10 pt-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+    <div class="space-y-2">
+      <p class="text-xs font-mono-text text-white/60 uppercase tracking-wider">
+        Last updated: {currentDate}
+      </p>
+      <p class="text-xs text-white/50">
+        © {currentYear} Ham D.
+      </p>
+    </div>
+  </div>
+</footer>
