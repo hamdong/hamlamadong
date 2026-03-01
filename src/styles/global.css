@@ -1,44 +1,121 @@
-:root {
+@import 'tailwindcss';
+
+@theme {
+  /* Fonts */
   --font-pixel: 'VT323', monospace;
   --font-mono: 'Space Mono', monospace;
   --font-sans: 'Inter', sans-serif;
-  --aqua-glow: #00f2ff;
-  --leaf-green: #22c55e;
-  --window-glass: rgba(0, 40, 100, 0.3);
-  --border-shine: rgba(255, 255, 255, 0.3);
+
+  /* Colors */
+  --color-aqua-glow: #00f2ff;
+  --color-border-shine: rgba(255, 255, 255, 0.3);
+
+  /* Shadow */
+  --shadow-neon: 0 0 10px rgba(0, 242, 255, 0.3);
 }
 
-body {
-  margin: 0;
-  padding: 20px;
-  font-family: var(--font-sans);
-  color: #fff;
-  min-height: 100vh;
-  background: linear-gradient(
-      180deg,
-      #001a4d 0%,
-      #0066cc 40%,
-      #00ccff 70%,
-      var(--leaf-green) 100%
-    )
-    fixed;
+@layer base {
+  html {
+    overflow-y: scroll;
+  }
+
+  body {
+    margin: 0;
+    padding: 10px;
+    color: #fff;
+    min-height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #001a4d 0%,
+        #0066cc 40%,
+        #00ccff 70%,
+        #22c55e 100%
+      )
+      fixed;
+  }
+
+  /* Typography Defaults */
+  h2 {
+    font-family: 'Inter', sans-serif;
+    @apply text-2xl sm:text-3xl font-bold mb-6 text-aqua-glow tracking-tight;
+  }
+
+  h3 {
+    font-family: 'Inter', sans-serif;
+    @apply text-lg sm:text-xl font-bold mb-4 text-aqua-glow tracking-tight;
+  }
+
+  p {
+    @apply mb-4 leading-relaxed text-white text-sm sm:text-base;
+  }
+
+  /* Persistent Glass Layer with decorations */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(
+        circle at 15% 20%,
+        rgba(0, 242, 255, 0.08) 0%,
+        transparent 35%
+      ),
+      radial-gradient(
+        circle at 85% 80%,
+        rgba(34, 197, 94, 0.06) 0%,
+        transparent 40%
+      );
+    pointer-events: none;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(15px);
+    }
+  }
 }
 
-/* Persistent Glass Layer */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    url('https://www.transparenttextures.com/patterns/p6.png'),
-    radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.1), transparent 40%);
-  pointer-events: none;
+@layer utilities {
+  .font-pixel-text {
+    font-family: 'VT323', monospace;
+  }
+
+  .font-mono-text {
+    font-family: 'Space Mono', monospace;
+  }
+
+  .mono-text {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: currentColor;
+  }
 }
 
-.mono-text {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--aqua-glow);
-  text-shadow: 0 0 5px rgba(0, 242, 255, 0.6);
+@utility main-content {
+  @apply p-6 sm:p-8 md:p-10 flex-1 bg-slate-800/40;
+
+  & a {
+    @apply text-aqua-glow font-medium no-underline hover:underline transition-colors;
+  }
+
+  & p {
+    @apply mb-4 leading-relaxed text-white text-sm sm:text-base;
+  }
+}
+
+@utility splash-panel {
+  @apply border border-white/20 rounded-lg p-8 sm:p-10 bg-slate-800/60;
+
+  & a {
+    @apply text-aqua-glow hover:underline;
+  }
+
+  & p {
+    @apply text-white;
+  }
 }

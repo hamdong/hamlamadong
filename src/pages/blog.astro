@@ -2,110 +2,106 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-// Combined fetching, filtering, and sorting into one cleaner chain
 const posts = (await getCollection('blog', ({ data }) => !import.meta.env.PROD || !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Extract all unique tags
+const allTags = Array.from(new Set(posts.flatMap(post => post.data.tags || [])))
+  .sort();
 ---
 
-<Layout title="Intel Stream">
-  <div class="stream-shell">
-    <header class="stream-header">
+<Layout title="Blog">
+  <div class="w-full">
+    <header class="mb-6 border-b border-white/10">
       <h2>Blog</h2>
     </header>
 
-    <div class="stream-list">
+    <!-- Tag Filter Section -->
+    <div class="mb-8 pb-6 border-b border-white/10">
+      <p class="text-xs font-mono-text text-white/70 uppercase tracking-wider mb-3">Filter by tag</p>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-filter="all" class="filter-btn active">[ ALL ]</button>
+        {allTags.map(tag => (
+          <button type="button" data-filter={tag} class="filter-btn">[ {tag.toUpperCase()} ]</button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Posts List -->
+    <div class="flex flex-col gap-1">
       {posts.map(post => (
-        <a href={`/blog/${post.slug}`} class="stream-item">
-          <time class="mono-date">
+        <a 
+          href={`/blog/${post.slug}`} 
+          data-tags={post.data.tags?.join(',')}
+          class="post-item group grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center p-2.5 px-3 rounded transition-colors border border-white/15 hover:border-white/40 hover:bg-white/8">
+          <time class="font-mono-text text-[0.65rem] sm:text-[0.75rem] text-white/70">
             {post.data.date.toLocaleDateString('en-GB').replace(/\//g, '.')}
           </time>
-
-          <div class="item-content">
-            <span class="item-title">{post.data.title}</span>
-            {post.data.tags?.[0] && <span class="item-tag">{post.data.tags[0]}</span>}
+          <div class="flex flex-col sm:flex-row items-start sm:items-baseline gap-2 sm:gap-[15px]">
+            <span class="font-medium text-sm sm:text-[1.05rem] text-white hover:text-aqua-glow transition-colors">
+              {post.data.title}
+            </span>
+            {post.data.tags?.[0] && (
+              <span class="font-pixel-text text-[0.7rem] sm:text-[0.8rem] text-white/60 uppercase whitespace-nowrap">
+                {post.data.tags[0]}
+              </span>
+            )}
           </div>
         </a>
       ))}
-
-      {!posts.length && <p class="mono-text">No blogs</p>}
+      {!posts.length && <p class="mono-text">No blogs detected.</p>}
     </div>
   </div>
 </Layout>
 
 <style>
-  .stream-shell { max-width: 800px; margin: 0 auto; }
-
-  .stream-header {
-    margin-bottom: 25px;
-    border-bottom: 1px solid transparent;
-    border-image: linear-gradient(90deg, var(--aqua-glow), transparent) 1;
+  .filter-btn {
+    font-family: 'VT323', monospace;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+    cursor: pointer;
   }
 
-  .stream-header h1 {
-    font-family: var(--font-pixel);
-    font-size: 2.2rem;
-    color: #fff;
-    margin: 0;
-    letter-spacing: 2px;
+  .filter-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 
-  .stream-list { display: flex; flex-direction: column; gap: 4px; }
-
-  .stream-item {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    align-items: center;
-    padding: 10px 12px;
-    text-decoration: none;
-    position: relative;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 4px;
-    transition: 0.2s ease;
+  .filter-btn.active {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
   }
 
-  .stream-item::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 0%; height: 1px;
-    background: var(--aqua-glow);
-    box-shadow: 0 0 8px var(--aqua-glow);
-    transition: width 0.3s ease;
-  }
-
-  .stream-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(8px);
-  }
-
-  .stream-item:hover::after { width: 100%; }
-
-  .mono-date {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--leaf-green);
-    opacity: 0.8;
-  }
-
-  .item-content { display: flex; align-items: baseline; gap: 15px; }
-
-  .item-title {
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 1.05rem;
-    color: #fff;
-  }
-
-  .stream-item:hover .item-title {
-    color: var(--aqua-glow);
-    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-  }
-
-  .item-tag {
-    font-family: var(--font-pixel);
-    font-size: 0.8rem;
-    color: var(--aqua-glow);
-    opacity: 0.4;
-    text-transform: uppercase;
+  .post-item.hidden {
+    display: none;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn') as NodeListOf<HTMLButtonElement>;
+    const postItems = document.querySelectorAll('.post-item') as NodeListOf<HTMLAnchorElement>;
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedFilter = button.dataset.filter ?? '';
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        postItems.forEach(post => {
+          if (selectedFilter === 'all') {
+            post.classList.remove('hidden');
+          } else {
+            const postTags = (post.dataset.tags ?? '').split(',').filter(Boolean);
+            post.classList.toggle('hidden', !postTags.includes(selectedFilter));
+          }
+        });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SidebarBox from '../components/SidebarBox.astro';
+---
+
+<Layout title="About Me">
+  <h2>About Me</h2>
+
+  <div class="space-y-8">
+    <!-- Profile -->
+    <div>
+      <h3 class="mb-4">Profile</h3>
+      <SidebarBox title="INFO">
+        <div class="space-y-2">
+          <p><span class="font-mono-text text-white/60">Location:</span> Canada</p>
+          <p><span class="font-mono-text text-white/60">Favourite Artist:</span> Rush</p>
+          <p><span class="font-mono-text text-white/60">Primary Tech:</span> Astro</p>
+          <p><span class="font-mono-text text-white/60">Current Status:</span> Exploring</p>
+        </div>
+      </SidebarBox>
+    </div>
+
+    <!-- Interests -->
+    <div>
+      <h3 class="mb-4">Interests</h3>
+      <p class="text-white/80">Web design, coding, art, reading, and music</p>
+    </div>
+
+    <!-- What I'm Working On -->
+    <div>
+      <h3 class="mb-4">Currently</h3>
+      <p class="text-white/80">
+        I'm working on this website and trying to get all my thoughts down. Thought it would be a cool way to share this with the world while also laying low.
+      </p>
+    </div>
+  </div>
+</Layout>

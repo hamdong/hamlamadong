@@ -12,21 +12,25 @@ const { title } = Astro.props;
 
 <style>
   .aero-box {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-shine);
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 4px;
     overflow: hidden;
   }
   .aero-header {
-    background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
-    background-color: rgba(255, 255, 255, 0.05);
+    background: rgba(15, 23, 42, 0.5);
     padding: 6px 12px;
-    position: relative;
-    border-bottom: 1px solid var(--border-shine);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .title-text {
-    font-size: 0.7rem; font-weight: 700; color: #fff;
-    text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 2vw, 0.7rem);
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Space Mono', monospace;
   }
-  .aero-content { padding: 12px; }
+  .aero-content { 
+    padding: clamp(8px, 2vw, 12px);
+  }
 </style>
