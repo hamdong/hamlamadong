@@ -6,9 +6,7 @@ My personal website made for blogging and expressing myself.
 
 - **Framework**: Astro 4.x
 - **CMS**: Sveltia
-- **Styling**: Tailwind CSS v4
-- **Fonts**: Inter (headings/body), Space Mono (metadata)
-- **Content**: Markdown with frontmatter
+- **Styling**: Tailwind CSS v4=
 
 ## 🚀 Project Structure
 
@@ -38,18 +36,6 @@ All commands are run from the root of the project:
 | `npm run dev`     | Start local dev server at `localhost:4321` |
 | `npm run build`   | Build production site to `./dist/`         |
 | `npm run preview` | Preview build locally before deploying     |
-
-## 🎨 Customization
-
-### Colors
-
-The color scheme is defined in `src/styles/global.css` with a blue-green gradient background. Adjust the `@theme` and gradient values to customize.
-
-### Fonts
-
-- Headings: Inter (font-sans)
-- Monospace: Space Mono
-- Change font imports in `src/layouts/Layout.astro`
 
 ### Blog Posts
 
