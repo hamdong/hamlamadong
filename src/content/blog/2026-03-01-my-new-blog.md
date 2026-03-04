@@ -2,7 +2,7 @@
 title: My New Blog
 date: 2026-03-01T14:09:00
 description: First blog post test.
-image: ''
+image: /assets/banner_image_1.png
 draft: false
 tags:
   - Journal
