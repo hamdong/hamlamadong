@@ -1,0 +1,139 @@
+---
+import { getCollection, type CollectionKey } from 'astro:content';
+import TagFilter from './TagFilter.astro';
+
+interface Props {
+  title: string;
+  collectionName: CollectionKey;
+}
+
+const { title, collectionName } = Astro.props;
+
+const posts = (await getCollection(collectionName))
+  .filter((p) => !import.meta.env.PROD || !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allTags = [
+  ...new Set(posts.flatMap((p) => ('tags' in p.data ? p.data.tags : []))),
+].sort();
+---
+
+<div class="w-full">
+  <header class="mb-6 border-b border-white/10">
+    <h2>{title}</h2>
+  </header>
+
+  {allTags.length > 0 && <TagFilter tags={allTags} />}
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+    {
+      posts.map((post) => {
+        const tags = 'tags' in post.data ? post.data.tags : [];
+        const rating = 'rating' in post.data ? post.data.rating : null;
+
+        const dateFinished =
+          'dateFinished' in post.data ? post.data.dateFinished : null;
+        const displayDate = dateFinished ?? post.data.date;
+        const isFinished = !!dateFinished;
+
+        return (
+          <a
+            href={`/${collectionName}/${post.slug}`}
+            data-tags={tags.join(',')}
+            class="post-item group flex flex-col rounded-lg border border-white/20 bg-white/5 transition-colors hover:border-white/60 hover:bg-white/10 overflow-hidden"
+          >
+            <div class="relative aspect-[4/3] overflow-hidden border-b border-white/20">
+              {post.data.image && (
+                <img
+                  src={post.data.image}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              )}
+            </div>
+
+            <div class="p-5 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <time class="font-mono-text text-[0.8rem] font-bold text-white/60">
+                  {displayDate.toLocaleDateString('en-US').replace(/\//g, '.')}
+                </time>
+
+                {collectionName === 'reading' && !isFinished && (
+                  <span class="text-aqua-glow font-mono-text text-[0.7rem] font-bold uppercase tracking-tighter animate-pulse">
+                    [ Reading ]
+                  </span>
+                )}
+
+                {tags[0] && (
+                  <span class="font-pixel-text text-[0.75rem] text-aqua-glow uppercase tracking-wider">
+                    #{tags[0]}
+                  </span>
+                )}
+              </div>
+
+              <h3 class="font-bold text-[1.1rem] leading-tight text-white group-hover:text-aqua-glow transition-colors m-0">
+                {post.data.title}
+              </h3>
+
+              <div class="mt-1 flex items-center justify-between">
+                <span class="text-[0.7rem] font-mono-text font-bold text-white/40 uppercase tracking-widest">
+                  {isFinished || collectionName === 'blog'
+                    ? 'Read Review →'
+                    : 'View Progress →'}
+                </span>
+
+                {isFinished && typeof rating === 'number' && (
+                  <span class="text-yellow-400 font-mono-text text-[0.9rem] tracking-tighter">
+                    {'★'.repeat(rating)}
+                    {'☆'.repeat(5 - rating)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+
+  {
+    !posts.length && (
+      <p class="mono-text">No {collectionName} entries detected.</p>
+    )
+  }
+</div>
+
+<style>
+  .post-item.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll(
+      '.filter-btn',
+    ) as NodeListOf<HTMLButtonElement>;
+    const postItems = document.querySelectorAll(
+      '.post-item',
+    ) as NodeListOf<HTMLAnchorElement>;
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selectedFilter = button.dataset.filter ?? '';
+        filterButtons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+        postItems.forEach((post) => {
+          if (selectedFilter === 'all') {
+            post.classList.remove('hidden');
+          } else {
+            const postTags = (post.dataset.tags ?? '')
+              .split(',')
+              .filter(Boolean);
+            post.classList.toggle('hidden', !postTags.includes(selectedFilter));
+          }
+        });
+      });
+    });
+  });
+</script>

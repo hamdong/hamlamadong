@@ -1,0 +1,49 @@
+---
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+<div class="mb-8 pb-6 border-b border-white/10">
+  <p class="text-xs font-mono-text text-white/70 uppercase tracking-wider mb-3">
+    Filter by tag
+  </p>
+  <div class="flex flex-wrap gap-2">
+    <button type="button" data-filter="all" class="filter-btn active">
+      [ ALL ]
+    </button>
+    {
+      tags.map((tag) => (
+        <button type="button" data-filter={tag} class="filter-btn">
+          [ {tag.toUpperCase()} ]
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .filter-btn {
+    font-family: var(--font-pixel);
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s;
+    cursor: pointer;
+    background: transparent;
+  }
+  .filter-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+  .filter-btn.active {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+  }
+</style>

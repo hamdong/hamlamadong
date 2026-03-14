@@ -30,3 +30,47 @@ collections:
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: true }
       - { label: 'Tags', name: 'tags', widget: 'list', default: ['Journal'] }
       - { label: 'Body', name: 'body', widget: 'markdown' }
+
+  - name: 'reading'
+    label: 'Reading List'
+    folder: 'src/content/reading'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    fields:
+      - { label: 'Book Title', name: 'title', widget: 'string' }
+      - { label: 'Post Date', name: 'date', widget: 'datetime' }
+      - {
+          label: 'Status',
+          name: 'status',
+          widget: 'select',
+          options: ['Reading', 'Finished'],
+          default: 'Finished',
+        }
+      - {
+          label: 'Date Finished',
+          name: 'dateFinished',
+          widget: 'datetime',
+          required: false,
+        }
+      - {
+          label: 'Rating (1-5)',
+          name: 'rating',
+          widget: 'number',
+          min: 1,
+          max: 5,
+          required: false,
+        }
+      - { label: 'Book Cover', name: 'image', widget: 'image', required: false }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - {
+          label: 'Short Review',
+          name: 'description',
+          widget: 'string',
+          required: false,
+        }
+      - {
+          label: 'Your Thoughts (Body)',
+          name: 'body',
+          widget: 'markdown',
+          required: false,
+        }

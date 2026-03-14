@@ -3,12 +3,13 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SidebarBox from '../components/SidebarBox.astro';
 
-const posts = (
-  await getCollection(
-    'blog',
-    ({ data }) => !import.meta.env.PROD || !data.draft,
-  )
-)
+const [blogPosts, readingPosts] = await Promise.all([
+  getCollection('blog'),
+  getCollection('reading'),
+]);
+
+const latestPosts = [...blogPosts, ...readingPosts]
+  .filter((p) => !import.meta.env.PROD || !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5);
 ---
@@ -20,14 +21,15 @@ const posts = (
     <div class="space-y-4">
       <p>
         Welcome to my personal website! This place is meant to serve as a secret
-        getaway for myself, separate from other ongoing projects that may have more,
-        um... corporate incentive for existing.
+        getaway for myself, separate from other ongoing projects that may have
+        more, um... corporate incentive for existing.
       </p>
       <p>
         This project was half an experiment and half of something that I've been
-        wanting to make for a long time. If you're curious about the tech, it was
-        made with a combination of <a href="https://astro.build/" target="_blank"
-          >Astro</a
+        wanting to make for a long time. If you're curious about the tech, it
+        was made with a combination of <a
+          href="https://astro.build/"
+          target="_blank">Astro</a
         > and this open-source CMS called <a
           href="https://github.com/sveltia/sveltia-cms"
           target="_blank">Sveltia</a
@@ -40,24 +42,65 @@ const posts = (
   <div class="mb-8">
     <h2 class="mb-4">Latest Posts</h2>
     <div class="space-y-3">
-      {posts.map(post => (
-        <a
-          href={`/blog/${post.slug}`}
-          class="block p-4 border border-white/10 rounded hover:border-white/30 hover:bg-white/5 transition-colors"
-        >
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <span class="font-medium text-white">{post.data.title}</span>
-            <time class="text-xs font-mono-text text-white/60 whitespace-nowrap">
-              {post.data.date.toLocaleDateString('en-GB').replace(/\//g, '.')}
-            </time>
-          </div>
-          {post.data.tags?.[0] && (
-            <p class="text-xs text-white/50 mt-2">#{post.data.tags[0]}</p>
-          )}
-        </a>
-      ))}
+      {
+        latestPosts.map((post) => {
+          const isReading = post.collection === 'reading';
+          const tag =
+            'tags' in post.data
+              ? post.data.tags?.[0]
+              : isReading
+                ? 'Reading'
+                : null;
+          const description = post.data.description;
+
+          return (
+            <a
+              href={`/${post.collection}/${post.slug}`}
+              class="group block p-4 border border-white/10 rounded hover:border-white/30 hover:bg-white/5 transition-colors"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <span class="font-medium text-white group-hover:text-aqua-glow transition-colors">
+                  {isReading && <span class="mr-1">📖</span>}
+                  {post.data.title}
+                </span>
+                <time class="text-xs font-mono-text text-white/60 whitespace-nowrap">
+                  {post.data.date
+                    .toLocaleDateString('en-US', {
+                      month: 'numeric',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })
+                    .replace(/\//g, '.')}
+                </time>
+              </div>
+
+              {/* Render description/short review if it exists */}
+              {description && (
+                <p class="text-sm text-white/70 mt-2 line-clamp-2 italic">
+                  "{description}"
+                </p>
+              )}
+
+              {tag && (
+                <p class="text-[0.65rem] font-mono-text uppercase tracking-widest text-white/40 mt-3">
+                  <span class={isReading ? 'text-aqua-glow/60' : ''}>
+                    #{tag}
+                  </span>
+                </p>
+              )}
+            </a>
+          );
+        })
+      }
     </div>
-    <a href="/blog" class="inline-block mt-6 text-sm hover:underline">View all posts →</a>
+    <div class="flex gap-4">
+      <a href="/blog" class="inline-block mt-6 text-sm hover:underline"
+        >View Journal →</a
+      >
+      <a href="/reading" class="inline-block mt-6 text-sm hover:underline"
+        >View Reading List →</a
+      >
+    </div>
   </div>
 
   <!-- Misc Section -->
