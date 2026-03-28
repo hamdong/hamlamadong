@@ -32,4 +32,20 @@ const reading = defineCollection({
   }),
 });
 
-export const collections = { blog, reading };
+const games = defineCollection({
+  type: 'content',
+  schema: baseSchema.extend({
+    platform: z
+      .enum(['PC', 'PS5', 'Xbox', 'Switch', 'Mobile', 'Retro'])
+      .default('PC'),
+    status: z
+      .enum(['Playing', 'Completed', '100% Cleared', 'Backlog', 'Dropped'])
+      .default('Completed'),
+    rating: z.preprocess(
+      (val) => (val === '' || val === null ? undefined : val),
+      z.number().min(1).max(5).optional(),
+    ),
+  }),
+});
+
+export const collections = { blog, reading, games };

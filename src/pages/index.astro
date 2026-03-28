@@ -3,12 +3,13 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SidebarBox from '../components/SidebarBox.astro';
 
-const [blogPosts, readingPosts] = await Promise.all([
+const [blogPosts, readingPosts, gamesPosts] = await Promise.all([
   getCollection('blog'),
   getCollection('reading'),
+  getCollection('games'),
 ]);
 
-const latestPosts = [...blogPosts, ...readingPosts]
+const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
   .filter((p) => !import.meta.env.PROD || !p.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5);
@@ -45,12 +46,15 @@ const latestPosts = [...blogPosts, ...readingPosts]
       {
         latestPosts.map((post) => {
           const isReading = post.collection === 'reading';
-          const tag =
-            'tags' in post.data
-              ? post.data.tags?.[0]
-              : isReading
-                ? 'Reading'
-                : null;
+          const isGame = post.collection === 'games';
+          let tag = null;
+          if ('tags' in post.data) {
+            tag = post.data.tags?.[0];
+          } else if (isReading) {
+            tag = 'Reading';
+          } else if (isGame) {
+            tag = 'Gaming';
+          }
           const description = post.data.description;
 
           return (
@@ -61,6 +65,7 @@ const latestPosts = [...blogPosts, ...readingPosts]
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <span class="font-medium text-white group-hover:text-aqua-glow transition-colors">
                   {isReading && <span class="mr-1">📖</span>}
+                  {isGame && <span class="mr-1">🎮</span>}
                   {post.data.title}
                 </span>
                 <time class="text-xs font-mono-text text-white/60 whitespace-nowrap">
@@ -83,7 +88,7 @@ const latestPosts = [...blogPosts, ...readingPosts]
 
               {tag && (
                 <p class="text-[0.65rem] font-mono-text uppercase tracking-widest text-white/40 mt-3">
-                  <span class={isReading ? 'text-aqua-glow/60' : ''}>
+                  <span class={isReading || isGame ? 'text-aqua-glow/60' : ''}>
                     #{tag}
                   </span>
                 </p>

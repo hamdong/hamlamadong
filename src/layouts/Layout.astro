@@ -7,6 +7,19 @@ import CloudLayer from '../components/CloudLayer.astro';
 import FishTank from '../components/FishTank.astro';
 
 const { title = 'Hamlamadong' } = Astro.props;
+const navLinks = [
+  { href: '/', label: 'HOME' },
+  { href: '/blog', label: 'BLOG' },
+  { href: '#', label: 'ART', disabled: true },
+  { href: '/games', label: 'GAMES' },
+  { href: '/reading', label: 'READING' },
+  { href: '/about', label: 'ABOUT' },
+];
+
+const linkStyle =
+  'font-pixel-text text-sm sm:text-base no-underline transition-colors';
+const activeStyle = 'text-aqua-glow hover:text-white';
+const disabledStyle = 'text-white/30 pointer-events-none line-through';
 ---
 
 <html lang="en">
@@ -34,36 +47,16 @@ const { title = 'Hamlamadong' } = Astro.props;
 
         <!-- Top Navigation -->
         <nav class="flex flex-wrap gap-3 sm:gap-4">
-          <a
-            href="/"
-            class="font-pixel-text text-sm sm:text-base text-aqua-glow no-underline hover:text-white transition-colors"
-          >
-            [ HOME ]
-          </a>
-          <a
-            href="/blog"
-            class="font-pixel-text text-sm sm:text-base text-aqua-glow no-underline hover:text-white transition-colors"
-          >
-            [ BLOG ]
-          </a>
-          <a
-            href="#"
-            class="font-pixel-text text-sm sm:text-base text-white/30 pointer-events-none line-through"
-          >
-            [ ART ]
-          </a>
-          <a
-            href="/reading"
-            class="font-pixel-text text-sm sm:text-base text-aqua-glow no-underline hover:text-white transition-colors"
-          >
-            [ READING ]
-          </a>
-          <a
-            href="/about"
-            class="font-pixel-text text-sm sm:text-base text-aqua-glow no-underline hover:text-white transition-colors"
-          >
-            [ ABOUT ME ]
-          </a>
+          {
+            navLinks.map((link) => (
+              <a
+                href={link.href}
+                class={`${linkStyle} ${link.disabled ? disabledStyle : activeStyle}`}
+              >
+                [ {link.label} ]
+              </a>
+            ))
+          }
         </nav>
       </div>
     </header>

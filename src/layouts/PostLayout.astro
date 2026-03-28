@@ -3,8 +3,11 @@ import type { CollectionEntry } from 'astro:content';
 import Layout from './Layout.astro';
 
 interface Props {
-  entry: CollectionEntry<'blog'> | CollectionEntry<'reading'>;
-  collectionName: 'blog' | 'reading';
+  entry:
+    | CollectionEntry<'blog'>
+    | CollectionEntry<'reading'>
+    | CollectionEntry<'games'>;
+  collectionName: 'blog' | 'reading' | 'games';
 }
 
 const { entry, collectionName } = Astro.props;
