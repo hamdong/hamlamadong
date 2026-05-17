@@ -3,7 +3,7 @@ title: Musical Audition Experience
 date: 2026-05-17T12:54:00
 description: Just going over some thoughts on my recent musical audition.
 image: /assets/banner_image_1.png
-draft: true
+draft: false
 tags:
   - Journal
 ---
