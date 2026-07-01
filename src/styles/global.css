@@ -90,4 +90,12 @@
     padding: 1.5rem;
     box-shadow: 0 24px 50px -20px rgba(15, 23, 42, 0.45);
   }
+
+  .glass-card {
+    @apply rounded-3xl border border-slate-200/8 bg-slate-950/40 backdrop-blur-xl overflow-hidden transition-all shadow-2xl shadow-slate-950/12;
+  }
+
+  .glass-card:hover {
+    @apply border-slate-100/60 bg-slate-900/25;
+  }
 }

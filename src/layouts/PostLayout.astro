@@ -27,7 +27,7 @@ const isReading = collectionName === 'reading';
     {
       !isReading && entry.data.image && (
         <div class="max-w-5xl mx-auto px-4 sm:px-6 mt-8">
-          <div class="aspect-video overflow-hidden rounded-3xl border border-white/10 shadow-xl">
+          <div class="overflow-hidden rounded-3xl border border-white/10 shadow-xl h-56 sm:h-64 lg:h-72">
             <img
               src={entry.data.image}
               alt={entry.data.title}

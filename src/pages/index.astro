@@ -17,7 +17,7 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
 
 <Layout>
   <!-- Welcome Section -->
-  <section class="glass-panel mb-8 max-w-7xl mx-auto">
+  <section class="mb-8 max-w-7xl mx-auto">
     <div class="space-y-4">
       <h2>Welcome</h2>
       <p>
@@ -46,15 +46,10 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
   </section>
 
   <!-- Latest Posts Section -->
-  <section class="glass-panel mb-8">
+  <section class="mb-8">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h2>Latest Posts</h2>
-        <p class="text-sm text-slate-400 mt-1">A quick snapshot of the freshest writing, reading, and games.</p>
-      </div>
-      <div class="flex flex-wrap justify-end gap-3">
-        <a href="/blog" class="text-sm text-slate-200 hover:text-white transition">View Journal →</a>
-        <a href="/reading" class="text-sm text-slate-200 hover:text-white transition">View Reading List →</a>
       </div>
     </div>
 
@@ -76,40 +71,42 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
           return (
             <a
               href={`/${post.collection}/${post.slug}`}
-              class="group block overflow-hidden rounded-3xl border border-slate-200/15 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20 transition hover:bg-slate-900/85"
+              class="group glass-card flex h-full flex-col"
             >
-              <div class="flex items-center justify-between gap-3 mb-3">
-                <span class="font-semibold text-white text-lg group-hover:text-sky-200 transition-colors">
-                  {post.data.title}
-                </span>
-                <time class="text-xs font-mono text-slate-200 whitespace-nowrap">
-                  {post.data.date
-                    .toLocaleDateString('en-US', {
-                      month: 'numeric',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })
-                    .replace(/\//g, '.')}
-                </time>
-              </div>
-
-              {description && (
-                <p class="text-sm text-slate-300 leading-relaxed line-clamp-3">
-                  {description}
-                </p>
-              )}
-
-              {tag && (
-                <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
-                  <span class={isReading || isGame ? 'text-sky-200' : 'text-slate-300'}>#{tag}</span>
+              <div class="p-5 flex flex-1 flex-col gap-4">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="font-semibold text-white text-lg group-hover:text-sky-200 transition-colors">
+                    {post.data.title}
+                  </span>
+                  <time class="text-xs font-mono text-slate-200 whitespace-nowrap">
+                    {post.data.date
+                      .toLocaleDateString('en-US', {
+                        month: 'numeric',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })
+                      .replace(/\//g, '.')}
+                  </time>
                 </div>
-              )}
+
+                {description && (
+                  <p class="text-sm text-slate-300 leading-relaxed line-clamp-3">
+                    {description}
+                  </p>
+                )}
+
+                {tag && (
+                  <div class="mt-auto self-start inline-flex items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
+                    <span class={isReading || isGame ? 'text-sky-200' : 'text-slate-300'}>#{tag}</span>
+                  </div>
+                )}
+              </div>
             </a>
-          );
-        })
-      }
-    </div>
-  </section>
+        );
+      })
+    }
+  </div>
+</section>
 
   <!-- Misc Section -->
   <SidebarBox title="OTHER STUFF">
