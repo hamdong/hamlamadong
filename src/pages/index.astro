@@ -17,9 +17,9 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
 
 <Layout>
   <!-- Welcome Section -->
-  <div class="mb-8">
-    <h2>Welcome</h2>
+  <section class="glass-panel mb-8 max-w-7xl mx-auto">
     <div class="space-y-4">
+      <h2>Welcome</h2>
       <p>
         Welcome to my personal website! This place is meant to serve as a secret
         getaway for myself, separate from other ongoing projects that may have
@@ -30,19 +30,35 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
         wanting to make for a long time. If you're curious about the tech, it
         was made with a combination of <a
           href="https://astro.build/"
-          target="_blank">Astro</a
+          target="_blank"
+          rel="noreferrer"
+          class="text-sky-200 hover:text-sky-100 transition-colors"
+          >Astro</a
         > and this open-source CMS called <a
           href="https://github.com/sveltia/sveltia-cms"
-          target="_blank">Sveltia</a
-        >. Pretty neat stuff!
+          target="_blank"
+          rel="noreferrer"
+          class="text-sky-200 hover:text-sky-100 transition-colors"
+          >Sveltia</a
+        >.
       </p>
     </div>
-  </div>
+  </section>
 
   <!-- Latest Posts Section -->
-  <div class="mb-8">
-    <h2 class="mb-4">Latest Posts</h2>
-    <div class="space-y-3">
+  <section class="glass-panel mb-8">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2>Latest Posts</h2>
+        <p class="text-sm text-slate-400 mt-1">A quick snapshot of the freshest writing, reading, and games.</p>
+      </div>
+      <div class="flex flex-wrap justify-end gap-3">
+        <a href="/blog" class="text-sm text-slate-200 hover:text-white transition">View Journal →</a>
+        <a href="/reading" class="text-sm text-slate-200 hover:text-white transition">View Reading List →</a>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-4 lg:grid-cols-2">
       {
         latestPosts.map((post) => {
           const isReading = post.collection === 'reading';
@@ -60,15 +76,13 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
           return (
             <a
               href={`/${post.collection}/${post.slug}`}
-              class="group block p-4 border border-white/10 rounded hover:border-white/30 hover:bg-white/5 transition-colors"
+              class="group block overflow-hidden rounded-3xl border border-slate-200/15 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/20 transition hover:bg-slate-900/85"
             >
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <span class="font-medium text-white group-hover:text-aqua-glow transition-colors">
-                  {isReading && <span class="mr-1">📖</span>}
-                  {isGame && <span class="mr-1">🎮</span>}
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <span class="font-semibold text-white text-lg group-hover:text-sky-200 transition-colors">
                   {post.data.title}
                 </span>
-                <time class="text-xs font-mono-text text-white/60 whitespace-nowrap">
+                <time class="text-xs font-mono text-slate-200 whitespace-nowrap">
                   {post.data.date
                     .toLocaleDateString('en-US', {
                       month: 'numeric',
@@ -79,48 +93,37 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
                 </time>
               </div>
 
-              {/* Render description/short review if it exists */}
               {description && (
-                <p class="text-sm text-white/70 mt-2 line-clamp-2 italic">
-                  "{description}"
+                <p class="text-sm text-slate-300 leading-relaxed line-clamp-3">
+                  {description}
                 </p>
               )}
 
               {tag && (
-                <p class="text-[0.65rem] font-mono-text uppercase tracking-widest text-white/40 mt-3">
-                  <span class={isReading || isGame ? 'text-aqua-glow/60' : ''}>
-                    #{tag}
-                  </span>
-                </p>
+                <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
+                  <span class={isReading || isGame ? 'text-sky-200' : 'text-slate-300'}>#{tag}</span>
+                </div>
               )}
             </a>
           );
         })
       }
     </div>
-    <div class="flex gap-4">
-      <a href="/blog" class="inline-block mt-6 text-sm hover:underline"
-        >View Journal →</a
-      >
-      <a href="/reading" class="inline-block mt-6 text-sm hover:underline"
-        >View Reading List →</a
-      >
-    </div>
-  </div>
+  </section>
 
   <!-- Misc Section -->
   <SidebarBox title="OTHER STUFF">
-    <div class="space-y-3">
+    <div class="space-y-4">
       <div>
-        <p class="text-xs font-mono-text text-white/60 mb-1">STATUS</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">STATUS</p>
         <p class="text-sm">Under active development</p>
       </div>
       <div>
-        <p class="text-xs font-mono-text text-white/60 mb-1">INTERESTS</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">INTERESTS</p>
         <p class="text-sm">Web design, creative coding, music</p>
       </div>
       <div>
-        <p class="text-xs font-mono-text text-white/60 mb-1">CURRENTLY</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">CURRENTLY</p>
         <p class="text-sm">Rebuilding & redesigning this space</p>
       </div>
     </div>

@@ -40,50 +40,50 @@ const allTags = [
           <a
             href={`/${collectionName}/${post.slug}`}
             data-tags={tags.join(',')}
-            class="post-item group flex flex-col rounded-lg border border-white/20 bg-white/5 transition-colors hover:border-white/60 hover:bg-white/10 overflow-hidden"
+            class="post-item group flex flex-col rounded-3xl border border-slate-200/15 bg-slate-900/60 backdrop-blur-xl transition-all hover:border-slate-100/70 hover:bg-slate-900/80 overflow-hidden shadow-2xl shadow-slate-950/20"
           >
-            <div class="relative aspect-[4/3] overflow-hidden border-b border-white/20">
+            <div class="relative aspect-video overflow-hidden border-b border-slate-200/15 bg-slate-950/30">
               {post.data.image && (
                 <img
                   src={post.data.image}
                   alt={post.data.title}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               )}
             </div>
 
-            <div class="p-5 flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <time class="font-mono-text text-[0.8rem] font-bold text-white/60">
+            <div class="p-4 flex flex-col gap-3">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <time class="font-mono text-xs font-semibold text-slate-200">
                   {displayDate.toLocaleDateString('en-US').replace(/\//g, '.')}
                 </time>
 
                 {collectionName === 'reading' && !isFinished && (
-                  <span class="text-aqua-glow font-mono-text text-[0.7rem] font-bold uppercase tracking-tighter animate-pulse">
-                    [ Reading ]
+                  <span class="font-mono text-xs uppercase tracking-wide text-sky-200 animate-pulse">
+                    Reading
                   </span>
                 )}
 
                 {tags[0] && (
-                  <span class="font-pixel-text text-[0.75rem] text-aqua-glow uppercase tracking-wider">
+                  <span class="font-pixel text-xs uppercase tracking-wide text-sky-200">
                     #{tags[0]}
                   </span>
                 )}
               </div>
 
-              <h3 class="font-bold text-[1.1rem] leading-tight text-white group-hover:text-aqua-glow transition-colors m-0">
+              <h3 class="font-semibold text-lg leading-tight text-slate-100 group-hover:text-sky-200 transition-colors">
                 {post.data.title}
               </h3>
 
-              <div class="mt-1 flex items-center justify-between">
-                <span class="text-[0.7rem] font-mono-text font-bold text-white/40 uppercase tracking-widest">
+              <div class="mt-1 flex items-center justify-between gap-3">
+                <span class="font-mono text-xs uppercase tracking-widest text-slate-400">
                   {isFinished || collectionName === 'blog'
                     ? 'Read Review →'
                     : 'View Progress →'}
                 </span>
 
                 {isFinished && typeof rating === 'number' && (
-                  <span class="text-yellow-400 font-mono-text text-[0.9rem] tracking-tighter">
+                  <span class="text-yellow-400 font-mono text-sm tracking-wide">
                     {'★'.repeat(rating)}
                     {'☆'.repeat(5 - rating)}
                   </span>
@@ -98,7 +98,7 @@ const allTags = [
 
   {
     !posts.length && (
-      <p class="mono-text">No {collectionName} entries detected.</p>
+      <p class="font-mono text-sm text-slate-300">No {collectionName} entries detected.</p>
     )
   }
 </div>
