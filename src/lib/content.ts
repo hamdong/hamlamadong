@@ -16,6 +16,14 @@ export interface ContentCardModel {
   description?: string;
 }
 
+export interface ContentDetailModel {
+  collectionLabel: string;
+  tags: string[];
+  rating?: number;
+  heroImage: boolean;
+  bodyImage: boolean;
+}
+
 export function isPublished(entry: SiteEntry, isProduction: boolean) {
   return !isProduction || !entry.data.draft;
 }
@@ -54,6 +62,21 @@ export function getContentCardModel(
         : 'View Progress →',
     rating: dateFinished ? rating : undefined,
     description: entry.data.description,
+  };
+}
+
+export function getContentDetailModel(
+  entry: SiteEntry,
+  collection: SiteCollection,
+): ContentDetailModel {
+  const isReading = collection === 'reading';
+
+  return {
+    collectionLabel: collection,
+    tags: getTags(entry),
+    rating: collection === 'reading' ? entry.data.rating : undefined,
+    heroImage: !isReading,
+    bodyImage: isReading,
   };
 }
 

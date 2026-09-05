@@ -1,0 +1,57 @@
+---
+import type { ContentDetailModel } from '../lib/content';
+
+interface Props {
+  model: ContentDetailModel;
+  date: Date;
+}
+
+const { model, date } = Astro.props;
+const stars =
+  typeof model.rating === 'number'
+    ? '★'.repeat(model.rating) + '☆'.repeat(5 - model.rating)
+    : null;
+---
+
+<div class="mb-8 border-b border-white/10 pb-6">
+  <div class="mb-5 flex flex-wrap items-center gap-4 text-slate-300">
+    <time class="font-mono text-xs uppercase tracking-widest text-slate-200">
+      {date.toLocaleDateString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      }).replace(/\//g, '.')}
+    </time>
+
+    {
+      model.tags.length > 0 ? (
+        <div class="flex flex-wrap gap-3">
+          {model.tags.map((tag) => (
+            <span class="font-pixel text-sm uppercase tracking-wide text-sky-200">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <span class="font-pixel text-sm uppercase tracking-wide text-slate-400">
+          {model.collectionLabel}
+        </span>
+      )
+    }
+  </div>
+
+  <slot name="title" />
+
+  {
+    stars && (
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-lg tracking-widest text-yellow-400">
+          {stars}
+        </span>
+        <span class="font-pixel text-xs uppercase tracking-wide text-slate-400">
+          ({model.rating}/5)
+        </span>
+      </div>
+    )
+  }
+</div>

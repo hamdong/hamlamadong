@@ -1,111 +1,39 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Layout from './Layout.astro';
+import PostMedia from '../components/PostMedia.astro';
+import PostMetadata from '../components/PostMetadata.astro';
+import {
+  getContentDetailModel,
+  type SiteCollection,
+  type SiteEntry,
+} from '../lib/content';
 
 interface Props {
-  entry:
-    | CollectionEntry<'blog'>
-    | CollectionEntry<'reading'>
-    | CollectionEntry<'games'>;
-  collectionName: 'blog' | 'reading' | 'games';
+  entry: Exclude<SiteEntry, CollectionEntry<'art'>>;
+  collectionName: Exclude<SiteCollection, 'art'>;
 }
 
 const { entry, collectionName } = Astro.props;
-
-let tags: string[] | undefined = undefined;
-if (entry.collection === 'blog') {
-  tags = entry.data.tags;
-}
-
-const rating = entry.collection === 'reading' ? entry.data.rating : undefined;
-const stars = rating ? '★'.repeat(rating) + '☆'.repeat(5 - rating) : null;
-const isReading = collectionName === 'reading';
+const detail = getContentDetailModel(entry, collectionName);
 ---
 
 <Layout title={entry.data.title}>
   <article class="w-full">
-    {
-      !isReading && entry.data.image && (
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 mt-8">
-          <div class="overflow-hidden rounded-3xl border border-white/10 shadow-xl h-56 sm:h-64 lg:h-72">
-            <img
-              src={entry.data.image}
-              alt={entry.data.title}
-              class="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      )
-    }
+    {detail.heroImage && <PostMedia src={entry.data.image} alt={entry.data.title} placement="hero" />}
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-      <header class="mb-8 border-b border-white/10 pb-6">
-        <div class="flex flex-wrap items-center gap-4 mb-5 text-slate-300">
-          <time
-            class="font-mono text-xs uppercase tracking-widest text-slate-200"
-          >
-            {
-              entry.data.date
-                .toLocaleDateString('en-US', {
-                  month: 'numeric',
-                  day: 'numeric',
-                  year: 'numeric',
-                })
-                .replace(/\//g, '.')
-            }
-          </time>
-
-          {
-            tags && tags.length > 0 ? (
-              <div class="flex flex-wrap gap-3">
-                {tags.map((tag) => (
-                  <span class="font-pixel text-sm text-sky-200 uppercase tracking-wide">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <span class="font-pixel text-sm text-slate-400 uppercase tracking-wide">
-                📖 {collectionName}
-              </span>
-            )
-          }
-        </div>
-
+      <PostMetadata model={detail} date={entry.data.date}>
         <h1
-          class="text-3xl sm:text-5xl font-semibold text-white leading-tight tracking-tight mb-4"
+          slot="title"
+          class="mb-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl"
         >
           {entry.data.title}
         </h1>
-
-        {
-          stars && (
-            <div class="flex items-center gap-3">
-              <span class="text-yellow-400 font-mono tracking-widest text-lg">
-                {stars}
-              </span>
-              <span class="font-pixel text-xs uppercase tracking-wide text-slate-400">
-                ({rating}/5)
-              </span>
-            </div>
-          )
-        }
-      </header>
+      </PostMetadata>
 
       <div class="glass-panel overflow-hidden">
-        {
-          isReading && entry.data.image && (
-            <div class="float-right ml-6 mb-4 w-32 sm:w-40 lg:w-48">
-              <div class="overflow-hidden rounded-2xl border border-slate-200/15 bg-slate-900/65 shadow-lg h-56">
-                <img
-                  src={entry.data.image}
-                  alt={entry.data.title}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          )
-        }
+        {detail.bodyImage && <PostMedia src={entry.data.image} alt={entry.data.title} placement="body" />}
 
         <slot />
       </div>
