@@ -2,16 +2,25 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SidebarBox from '../components/SidebarBox.astro';
+import LatestCard from '../components/LatestCard.astro';
+import {
+  getContentCardModel,
+  isPublished,
+  sortByDate,
+} from '../lib/content';
 
-const [blogPosts, readingPosts, gamesPosts] = await Promise.all([
+const [blogPosts, artPosts, readingPosts, gamesPosts] = await Promise.all([
   getCollection('blog'),
+  getCollection('art'),
   getCollection('reading'),
   getCollection('games'),
 ]);
 
-const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
-  .filter((p) => !import.meta.env.PROD || !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+const latestPosts = sortByDate(
+  [...blogPosts, ...artPosts, ...readingPosts, ...gamesPosts].filter((entry) =>
+    isPublished(entry, import.meta.env.PROD),
+  ),
+)
   .slice(0, 5);
 ---
 
@@ -32,14 +41,12 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
           href="https://astro.build/"
           target="_blank"
           rel="noreferrer"
-          class="text-sky-200 hover:text-sky-100 transition-colors"
-          >Astro</a
+          class="text-sky-200 hover:text-sky-100 transition-colors">Astro</a
         > and this open-source CMS called <a
           href="https://github.com/sveltia/sveltia-cms"
           target="_blank"
           rel="noreferrer"
-          class="text-sky-200 hover:text-sky-100 transition-colors"
-          >Sveltia</a
+          class="text-sky-200 hover:text-sky-100 transition-colors">Sveltia</a
         >.
       </p>
     </div>
@@ -47,7 +54,9 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
 
   <!-- Latest Posts Section -->
   <section class="mb-8">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div
+      class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+    >
       <div>
         <h2>Latest Posts</h2>
       </div>
@@ -55,72 +64,32 @@ const latestPosts = [...blogPosts, ...readingPosts, ...gamesPosts]
 
     <div class="mt-6 grid gap-4 lg:grid-cols-2">
       {
-        latestPosts.map((post) => {
-          const isReading = post.collection === 'reading';
-          const isGame = post.collection === 'games';
-          let tag = null;
-          if ('tags' in post.data) {
-            tag = post.data.tags?.[0];
-          } else if (isReading) {
-            tag = 'Reading';
-          } else if (isGame) {
-            tag = 'Gaming';
-          }
-          const description = post.data.description;
-
-          return (
-            <a
-              href={`/${post.collection}/${post.slug}`}
-              class="group glass-card flex h-full flex-col"
-            >
-              <div class="p-5 flex flex-1 flex-col gap-4">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="font-semibold text-white text-lg group-hover:text-sky-200 transition-colors">
-                    {post.data.title}
-                  </span>
-                  <time class="text-xs font-mono text-slate-200 whitespace-nowrap">
-                    {post.data.date
-                      .toLocaleDateString('en-US', {
-                        month: 'numeric',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })
-                      .replace(/\//g, '.')}
-                  </time>
-                </div>
-
-                {description && (
-                  <p class="text-sm text-slate-300 leading-relaxed line-clamp-3">
-                    {description}
-                  </p>
-                )}
-
-                {tag && (
-                  <div class="mt-auto self-start inline-flex items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
-                    <span class={isReading || isGame ? 'text-sky-200' : 'text-slate-300'}>#{tag}</span>
-                  </div>
-                )}
-              </div>
-            </a>
-        );
-      })
-    }
-  </div>
-</section>
+        latestPosts.map((post) => (
+          <LatestCard model={getContentCardModel(post, post.collection)} />
+        ))
+      }
+    </div>
+  </section>
 
   <!-- Misc Section -->
   <SidebarBox title="OTHER STUFF">
     <div class="space-y-4">
       <div>
-        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">STATUS</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">
+          STATUS
+        </p>
         <p class="text-sm">Under active development</p>
       </div>
       <div>
-        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">INTERESTS</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">
+          INTERESTS
+        </p>
         <p class="text-sm">Web design, creative coding, music</p>
       </div>
       <div>
-        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">CURRENTLY</p>
+        <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">
+          CURRENTLY
+        </p>
         <p class="text-sm">Rebuilding & redesigning this space</p>
       </div>
     </div>

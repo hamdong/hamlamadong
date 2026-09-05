@@ -1,104 +1,56 @@
 ---
 import { getCollection, type CollectionKey } from 'astro:content';
 import TagFilter from './TagFilter.astro';
+import PostCard from './PostCard.astro';
+import ArtCard from './ArtCard.astro';
+import {
+  getContentCardModel,
+  isPublished,
+  isSiteCollection,
+  type SiteCollection,
+} from '../lib/content';
 
 interface Props {
   title: string;
-  collectionName: CollectionKey;
+  collectionName: SiteCollection;
 }
 
 const { title, collectionName } = Astro.props;
 
 const posts = (await getCollection(collectionName))
-  .filter((p) => !import.meta.env.PROD || !p.data.draft)
+  .filter((p) => isSiteCollection(p.collection))
+  .filter((p) => isPublished(p, import.meta.env.PROD))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const allTags = [
-  ...new Set(posts.flatMap((p) => ('tags' in p.data ? p.data.tags : []))),
+  ...new Set(
+    posts.flatMap((p) => getContentCardModel(p, collectionName).tags),
+  ),
 ].sort();
+
+const Card = collectionName === 'art' ? ArtCard : PostCard;
 ---
 
 <div class="w-full">
-  <header class="mb-6 border-b border-white/10">
-    <h2>{title}</h2>
+  <header class="mb-6 border-b border-white/10 pb-2">
+    <h2 class="text-2xl font-bold text-white">{title}</h2>
   </header>
 
   {allTags.length > 0 && <TagFilter tags={allTags} />}
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
     {
-      posts.map((post) => {
-        const tags = 'tags' in post.data ? post.data.tags : [];
-        const rating = 'rating' in post.data ? post.data.rating : null;
-
-        const dateFinished =
-          'dateFinished' in post.data ? post.data.dateFinished : null;
-        const displayDate = dateFinished ?? post.data.date;
-        const isFinished = !!dateFinished;
-
-        return (
-          <a
-            href={`/${collectionName}/${post.slug}`}
-            data-tags={tags.join(',')}
-            class="post-item group glass-card flex h-full flex-col"
-          >
-            <div class="relative h-48 overflow-hidden border-b border-slate-200/15 bg-slate-950/30">
-              {post.data.image && (
-                <img
-                  src={post.data.image}
-                  alt={post.data.title}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              )}
-            </div>
-
-            <div class="p-5 flex flex-1 flex-col gap-4">
-              <div class="flex flex-wrap items-center justify-between gap-3">
-                <time class="font-mono text-xs font-semibold text-slate-200">
-                  {displayDate.toLocaleDateString('en-US').replace(/\//g, '.')}
-                </time>
-
-                {collectionName === 'reading' && !isFinished && (
-                  <span class="font-mono text-xs uppercase tracking-wide text-sky-200 animate-pulse">
-                    Reading
-                  </span>
-                )}
-              </div>
-
-              <h3 class="font-semibold text-lg leading-tight text-slate-100 group-hover:text-sky-200 transition-colors">
-                {post.data.title}
-              </h3>
-
-              <div class="mt-1 flex items-center justify-between gap-3">
-                <span class="font-mono text-xs uppercase tracking-widest text-slate-400">
-                  {isFinished || collectionName === 'blog'
-                    ? 'Read Review →'
-                    : 'View Progress →'}
-                </span>
-
-                {isFinished && typeof rating === 'number' && (
-                  <span class="text-yellow-400 font-mono text-sm tracking-wide">
-                    {'★'.repeat(rating)}
-                    {'☆'.repeat(5 - rating)}
-                  </span>
-                )}
-              </div>
-
-              <div class="mt-auto self-start inline-flex items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
-                {tags[0] && (
-                  <span class="text-sky-200">#{tags[0]}</span>
-                )}
-              </div>
-            </div>
-          </a>
-        );
-      })
+      posts.map((post) => (
+        <Card model={getContentCardModel(post, collectionName)} />
+      ))
     }
   </div>
 
   {
     !posts.length && (
-      <p class="font-mono text-sm text-slate-300">No {collectionName} entries detected.</p>
+      <p class="font-mono text-sm text-slate-300">
+        No {collectionName} entries detected.
+      </p>
     )
   }
 </div>
@@ -123,6 +75,7 @@ const allTags = [
         const selectedFilter = button.dataset.filter ?? '';
         filterButtons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
+
         postItems.forEach((post) => {
           if (selectedFilter === 'all') {
             post.classList.remove('hidden');

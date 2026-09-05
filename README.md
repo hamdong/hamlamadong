@@ -1,6 +1,6 @@
 # Hamlamadong
 
-My personal website made for blogging and expressing myself.
+My personal blog website.
 
 ## Tech Stack
 
@@ -36,10 +36,6 @@ All commands are run from the root of the project:
 | `npm run dev`     | Start local dev server at `localhost:4321` |
 | `npm run build`   | Build production site to `./dist/`         |
 | `npm run preview` | Preview build locally before deploying     |
-
-### Blog Posts
-
-Add new markdown files to `src/content/blog/` with the naming convention `YYYY-MM-DD-title.md`. Update `src/content/config.ts` to modify the content collection schema.
 
 ## 📝 License
 

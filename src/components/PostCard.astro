@@ -1,0 +1,72 @@
+---
+import type { ContentCardModel } from '../lib/content';
+
+interface Props {
+  model: ContentCardModel;
+}
+
+const { model } = Astro.props;
+---
+
+<a
+  href={model.href}
+  data-tags={model.tags.join(',')}
+  class="post-item group glass-card flex h-full flex-col"
+>
+  <div
+    class="relative h-48 overflow-hidden border-b border-slate-200/15 bg-slate-950/30"
+  >
+    {
+      model.image && (
+        <img
+          src={model.image}
+          alt={model.title}
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col gap-4 p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <time class="font-mono text-xs font-semibold text-slate-200">
+        {model.date.toLocaleDateString('en-US').replace(/\//g, '.')}
+      </time>
+
+      {
+        model.statusLabel && (
+          <span class="animate-pulse font-mono text-xs uppercase tracking-wide text-sky-200">
+            {model.statusLabel}
+          </span>
+        )
+      }
+    </div>
+
+    <h3
+      class="text-lg font-semibold leading-tight text-slate-100 transition-colors group-hover:text-sky-200"
+    >
+      {model.title}
+    </h3>
+
+    <div class="mt-1 flex items-center justify-between gap-3">
+      <span class="font-mono text-xs uppercase tracking-widest text-slate-400">
+        {model.actionLabel}
+      </span>
+
+      {
+        typeof model.rating === 'number' && (
+          <span class="font-mono text-sm tracking-wide text-yellow-400">
+            {'★'.repeat(model.rating)}
+            {'☆'.repeat(5 - model.rating)}
+          </span>
+        )
+      }
+    </div>
+
+    <div
+      class="mt-auto inline-flex items-center gap-2 self-start rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 font-mono text-xs uppercase tracking-widest text-slate-300"
+    >
+      {model.tags[0] && <span class="text-sky-200">#{model.tags[0]}</span>}
+    </div>
+  </div>
+</a>

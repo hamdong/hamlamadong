@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ArtModal from '../../components/ArtModal.astro';
+
+export async function getStaticPaths() {
+  const allArt = await getCollection('art');
+  return allArt.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry, allArt },
+  }));
+}
+
+const { entry, allArt } = Astro.props;
+const { Content } = await entry.render();
+
+const sortedArt = [...allArt].sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+);
+const currentIndex = sortedArt.findIndex((item) => item.id === entry.id);
+const prevEntry = currentIndex > 0 ? sortedArt[currentIndex - 1] : null;
+const nextEntry =
+  currentIndex < sortedArt.length - 1 ? sortedArt[currentIndex + 1] : null;
+---
+
+<Layout title={`${entry.data.title} | Art Gallery`}>
+  <ArtModal entry={entry} prevEntry={prevEntry} nextEntry={nextEntry}>
+    <Content />
+  </ArtModal>
+</Layout>

@@ -7,6 +7,17 @@ backend:
   base_url: https://hamlamadong-auth.hamlamadong.workers.dev
   auth_endpoint: /auth
 
+media_library:
+  name: cloudflare_r2
+
+# https://sveltiacms.app/en/docs/media/cloudflare-r2#configuration-properties
+media_libraries:
+  cloudflare_r2:
+    account_id: 'ee96d608c9e713cb934f5281ceb2e00d'
+    bucket: 'hamlamadong-media'
+    access_key_id: 'e9df475878ee509ae637678e05b0342b'
+    public_url: 'https://pub-1f7375d876ac4fa78065de9629e6a0c4.r2.dev'
+
 # Media settings
 media_folder: 'public/assets'
 public_folder: '/assets'
@@ -30,6 +41,43 @@ collections:
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: true }
       - { label: 'Tags', name: 'tags', widget: 'list', default: ['Journal'] }
       - { label: 'Body', name: 'body', widget: 'markdown' }
+
+  - name: 'art'
+    label: 'Art'
+    folder: 'src/content/art'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    fields:
+      - { label: 'Artwork Title', name: 'title', widget: 'string' }
+      - { label: 'Created / Post Date', name: 'date', widget: 'datetime' }
+      - {
+          label: 'Artwork File',
+          name: 'image',
+          widget: 'image',
+          required: true,
+        }
+      - {
+          label: 'Medium / Type',
+          name: 'medium',
+          widget: 'select',
+          options: ['Digital', 'Traditional', 'Photography'],
+          default: 'Digital',
+        }
+      - {
+          label: 'Tools',
+          name: 'tools',
+          widget: 'list',
+          required: false,
+        }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Tags', name: 'tags', widget: 'list', default: ['Art'] }
+      - {
+          label: 'Caption',
+          name: 'description',
+          widget: 'string',
+          required: false,
+        }
+      - { label: 'Notes', name: 'body', widget: 'markdown', required: false }
 
   - name: 'reading'
     label: 'Reading List'

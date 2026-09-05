@@ -18,6 +18,18 @@ const blog = defineCollection({
   }),
 });
 
+const art = defineCollection({
+  type: 'content',
+  schema: baseSchema.extend({
+    image: z.string(),
+    tags: z.array(z.string()).default(['Art']),
+    medium: z
+      .enum(['Digital', 'Traditional', 'Photography'])
+      .default('Digital'),
+    tools: z.array(z.string()).optional(),
+  }),
+});
+
 const reading = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
@@ -48,4 +60,4 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { blog, reading, games };
+export const collections = { blog, art, reading, games };

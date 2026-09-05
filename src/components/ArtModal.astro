@@ -1,0 +1,230 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'art'>;
+  prevEntry?: CollectionEntry<'art'> | null;
+  nextEntry?: CollectionEntry<'art'> | null;
+}
+
+const { entry, prevEntry, nextEntry } = Astro.props;
+
+const formattedDate = new Date(entry.data.date)
+  .toLocaleDateString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  })
+  .replace(/\//g, '.');
+---
+
+<div
+  id="art-modal-backdrop"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-950/85 backdrop-blur-md overflow-y-auto"
+>
+  <!-- Close Button (Routes back to main grid) -->
+  <a
+    href="/art"
+    class="fixed top-5 right-5 z-50 p-3 rounded-full bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 transition-all shadow-lg"
+    aria-label="Close modal"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+  </a>
+
+  <!-- Prev Arrow -->
+  {
+    prevEntry && (
+      <a
+        href={`/art/${prevEntry.slug}`}
+        id="prev-btn"
+        class="fixed left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white hover:scale-110 transition-all shadow-xl hidden sm:flex"
+        aria-label="Previous Artwork"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </a>
+    )
+  }
+
+  <!-- Next Arrow -->
+  {
+    nextEntry && (
+      <a
+        href={`/art/${nextEntry.slug}`}
+        id="next-btn"
+        class="fixed right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white hover:scale-110 transition-all shadow-xl hidden sm:flex"
+        aria-label="Next Artwork"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+    )
+  }
+
+  <!-- Modal Card -->
+  <div
+    id="art-modal-card"
+    class="relative w-full max-w-5xl my-auto flex flex-col items-center"
+  >
+    <!-- Enlarged Artwork Image -->
+    <div
+      class="relative max-h-[70vh] sm:max-h-[75vh] flex justify-center items-center overflow-hidden rounded-2xl border border-white/15 bg-slate-900/50 shadow-2xl"
+    >
+      <img
+        src={entry.data.image}
+        alt={entry.data.title}
+        class="max-h-[70vh] sm:max-h-[75vh] w-auto max-w-full object-contain select-none"
+      />
+    </div>
+
+    <!-- Metadata Card -->
+    <div
+      class="w-full max-w-3xl mt-6 p-6 sm:p-8 rounded-2xl border border-white/10 bg-slate-900/80 shadow-xl backdrop-blur-sm text-left"
+    >
+      <div
+        class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 mb-4"
+      >
+        <div>
+          <h1
+            class="text-2xl sm:text-3xl font-semibold text-white tracking-tight"
+          >
+            {entry.data.title}
+          </h1>
+          <p
+            class="font-mono text-xs text-slate-400 mt-1 uppercase tracking-widest"
+          >
+            {formattedDate} • <span class="text-sky-300"
+              >{entry.data.medium || 'Digital'}</span
+            >
+          </p>
+          {
+            entry.data.description && (
+              <p class="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
+                {entry.data.description}
+              </p>
+            )
+          }
+        </div>
+      </div>
+
+      <div class="prose prose-invert max-w-none text-slate-200">
+        <slot />
+      </div>
+
+      {
+        entry.data.tools && entry.data.tools.length > 0 && (
+          <div class="mt-5 flex flex-wrap gap-2 border-t border-white/10 pt-4">
+            {entry.data.tools.map((tool) => (
+              <span class="rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 font-mono text-xs uppercase tracking-widest text-slate-300">
+                {tool}
+              </span>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- Mobile Navigation Controls -->
+      <div
+        class="flex sm:hidden items-center justify-between mt-6 pt-4 border-t border-white/10"
+      >
+        {
+          prevEntry ? (
+            <a
+              href={`/art/${prevEntry.slug}`}
+              class="font-mono text-xs text-sky-400"
+            >
+              ← Previous
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        <a href="/art" class="font-mono text-xs text-slate-400 uppercase"
+          >Index</a
+        >
+        {
+          nextEntry ? (
+            <a
+              href={`/art/${nextEntry.slug}`}
+              class="font-mono text-xs text-sky-400"
+            >
+              Next →
+            </a>
+          ) : (
+            <span />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let cleanup = () => {};
+
+  function initializeModal() {
+    cleanup();
+
+    const backdrop = document.getElementById('art-modal-backdrop');
+    const card = document.getElementById('art-modal-card');
+    if (!backdrop || !card) return;
+
+    const closeLink = backdrop.querySelector<HTMLAnchorElement>(
+      'a[href="/art"]',
+    );
+    const onClick = (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && !card.contains(target)) {
+        closeLink?.click();
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeLink?.click();
+      if (event.key === 'ArrowLeft') {
+        document.getElementById('prev-btn')?.click();
+      }
+      if (event.key === 'ArrowRight') {
+        document.getElementById('next-btn')?.click();
+      }
+    };
+
+    backdrop.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKeyDown);
+    cleanup = () => {
+      backdrop.removeEventListener('click', onClick);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }
+
+  document.addEventListener('astro:page-load', initializeModal);
+  document.addEventListener('astro:before-preparation', () => cleanup());
+  initializeModal();
+</script>
