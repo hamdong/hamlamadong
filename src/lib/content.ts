@@ -1,4 +1,4 @@
-import type { CollectionEntry, CollectionKey } from 'astro:content';
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
 
 export type SiteCollection = 'blog' | 'art' | 'reading' | 'games';
 export type SiteEntry = CollectionEntry<SiteCollection>;
@@ -26,6 +26,19 @@ export interface ContentDetailModel {
 
 export function isPublished(entry: SiteEntry, isProduction: boolean) {
   return !isProduction || !entry.data.draft;
+}
+
+export function getSiteCollectionEntries(collection: SiteCollection) {
+  return getCollection(collection);
+}
+
+export async function getSiteCollectionPaths(collection: SiteCollection) {
+  const entries = await getSiteCollectionEntries(collection);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
 }
 
 export function getEntryHref(collection: SiteCollection, slug: string) {
