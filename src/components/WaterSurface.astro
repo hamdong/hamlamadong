@@ -1,0 +1,84 @@
+<div class="water-surface relative isolate overflow-hidden rounded-[2rem] border border-cyan-100/20 shadow-2xl shadow-cyan-950/30">
+  <div class="water-sun" aria-hidden="true"></div>
+  <svg
+    class="water-caustics water-caustics--near"
+    viewBox="0 0 900 360"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M-40 110C90 40 150 180 280 105S470 45 570 115s180 70 370-10" />
+    <path d="M-80 240c130-80 210 70 350-5s190-55 300 10 170 45 360-35" />
+  </svg>
+  <svg
+    class="water-caustics water-caustics--far"
+    viewBox="0 0 900 360"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M-30 155c120 65 190-85 330-10s205 100 325 5 170-80 315-10" />
+    <path d="M-70 300c150 45 220-100 370-15s230 80 330 0 180-60 330 5" />
+  </svg>
+  <div class="relative z-10 p-4 sm:p-8">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .water-surface {
+    background:
+      radial-gradient(circle at 78% -8%, rgba(254, 240, 138, 0.3), transparent 24%),
+      radial-gradient(circle at 15% 18%, rgba(125, 211, 252, 0.26), transparent 34%),
+      linear-gradient(145deg, rgba(8, 74, 109, 0.82), rgba(6, 95, 125, 0.66) 48%, rgba(15, 118, 110, 0.62));
+  }
+
+  .water-sun {
+    position: absolute;
+    top: -7rem;
+    right: 12%;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(254, 249, 195, 0.95) 0 5%, rgba(253, 224, 71, 0.38) 22%, rgba(253, 224, 71, 0.08) 52%, transparent 72%);
+    filter: blur(3px);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .water-caustics {
+    position: absolute;
+    inset: 0;
+    width: 125%;
+    height: 100%;
+    pointer-events: none;
+    fill: none;
+    stroke: rgba(186, 230, 253, 0.25);
+    stroke-linecap: round;
+    stroke-width: 3;
+  }
+
+  .water-caustics--near {
+    animation: water-drift 18s ease-in-out infinite alternate;
+  }
+
+  .water-caustics--far {
+    width: 115%;
+    opacity: 0.5;
+    stroke: rgba(94, 234, 212, 0.3);
+    animation: water-drift 26s ease-in-out -8s infinite alternate-reverse;
+  }
+
+  @keyframes water-drift {
+    from {
+      transform: translate3d(-4%, -1%, 0) scaleY(0.96);
+    }
+    to {
+      transform: translate3d(3%, 2%, 0) scaleY(1.04);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .water-caustics {
+      animation: none;
+    }
+  }
+</style>

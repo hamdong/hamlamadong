@@ -3,9 +3,11 @@ const currentYear = new Date().getFullYear();
 const currentDate = new Date().toLocaleDateString('en-US').replace(/\//g, '.');
 ---
 
-<footer class="site-footer">
+<footer class="border-t border-white/10 py-6">
   <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-    <p class="eyebrow">Last updated: {currentDate}</p>
+    <p class="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-slate-400">
+      Last updated: {currentDate}
+    </p>
     <p class="text-sm text-slate-400">© {currentYear} Ham D.</p>
   </div>
 </footer>

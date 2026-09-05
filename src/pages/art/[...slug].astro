@@ -12,7 +12,6 @@ export async function getStaticPaths() {
 }
 
 const { entry, allArt } = Astro.props;
-const { Content } = await entry.render();
 
 const sortedArt = [...allArt].sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
@@ -24,7 +23,5 @@ const nextEntry =
 ---
 
 <Layout title={`${entry.data.title} | Art Gallery`}>
-  <ArtModal entry={entry} prevEntry={prevEntry} nextEntry={nextEntry}>
-    <Content />
-  </ArtModal>
+  <ArtModal entry={entry} prevEntry={prevEntry} nextEntry={nextEntry} />
 </Layout>

@@ -9,20 +9,13 @@ interface Props {
 
 const { entry, prevEntry, nextEntry } = Astro.props;
 
-const formattedDate = new Date(entry.data.date)
-  .toLocaleDateString('en-US', {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  })
-  .replace(/\//g, '.');
 ---
 
 <div
   id="art-modal-backdrop"
   role="dialog"
   aria-modal="true"
-  aria-labelledby="art-modal-title"
+  aria-label={`Artwork viewer: ${entry.data.title}`}
   tabindex="-1"
   class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-950/85 backdrop-blur-md overflow-y-auto"
 >
@@ -110,85 +103,31 @@ const formattedDate = new Date(entry.data.date)
       />
     </div>
 
-    <!-- Metadata Card -->
-    <div
-      class="w-full max-w-3xl mt-6 p-6 sm:p-8 rounded-2xl border border-white/10 bg-slate-900/80 shadow-xl backdrop-blur-sm text-left"
-    >
-      <div
-        class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 mb-4"
-      >
-        <div>
-          <h1
-            id="art-modal-title"
-            class="text-2xl sm:text-3xl font-semibold text-white tracking-tight"
-          >
-            {entry.data.title}
-          </h1>
-          <p
-            class="font-mono text-xs text-slate-400 mt-1 uppercase tracking-widest"
-          >
-            {formattedDate} • <span class="text-sky-300"
-              >{entry.data.medium || 'Digital'}</span
-            >
-          </p>
-          {
-            entry.data.description && (
-              <p class="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
-                {entry.data.description}
-              </p>
-            )
-          }
-        </div>
-      </div>
-
-      <div class="prose prose-invert max-w-none text-slate-200">
-        <slot />
-      </div>
-
+    <!-- Mobile Navigation Controls -->
+    <div class="flex items-center justify-center gap-6 sm:hidden">
       {
-        entry.data.tools && entry.data.tools.length > 0 && (
-          <div class="mt-5 flex flex-wrap gap-2 border-t border-white/10 pt-4">
-            {entry.data.tools.map((tool) => (
-              <span class="rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 font-mono text-xs uppercase tracking-widest text-slate-300">
-                {tool}
-              </span>
-            ))}
-          </div>
+        prevEntry && (
+          <a
+            href={`/art/${prevEntry.slug}`}
+            class="font-mono text-xs text-sky-400"
+            aria-label="Previous artwork"
+          >
+            ← Previous
+          </a>
         )
       }
-
-      <!-- Mobile Navigation Controls -->
-      <div
-        class="flex sm:hidden items-center justify-between mt-6 pt-4 border-t border-white/10"
-      >
-        {
-          prevEntry ? (
-            <a
-              href={`/art/${prevEntry.slug}`}
-              class="font-mono text-xs text-sky-400"
-            >
-              ← Previous
-            </a>
-          ) : (
-            <span />
-          )
-        }
-        <a href="/art" class="font-mono text-xs text-slate-400 uppercase"
-          >Index</a
-        >
-        {
-          nextEntry ? (
-            <a
-              href={`/art/${nextEntry.slug}`}
-              class="font-mono text-xs text-sky-400"
-            >
-              Next →
-            </a>
-          ) : (
-            <span />
-          )
-        }
-      </div>
+      <a href="/art" class="font-mono text-xs uppercase text-slate-400">Index</a>
+      {
+        nextEntry && (
+          <a
+            href={`/art/${nextEntry.slug}`}
+            class="font-mono text-xs text-sky-400"
+            aria-label="Next artwork"
+          >
+            Next →
+          </a>
+        )
+      }
     </div>
   </div>
 </div>

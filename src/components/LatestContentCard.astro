@@ -6,10 +6,12 @@ interface Props {
 }
 
 const { model } = Astro.props;
-const tag = model.tags[0];
 ---
 
-<a href={model.href} class="group content-card flex h-full flex-col">
+<a
+  href={model.href}
+  class="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-950/30 shadow-xl shadow-slate-950/10 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-200/40 hover:bg-slate-900/35 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200"
+>
   <div class="flex flex-1 flex-col gap-4 p-5">
     <div class="flex items-center justify-between gap-3">
       <span
@@ -28,7 +30,7 @@ const tag = model.tags[0];
 
     {
       model.image ? (
-        <div class="content-card__image content-card__image--latest">
+        <div class="aspect-[16/7] overflow-hidden border-b border-white/10 bg-slate-950/40">
           <img
             src={model.image}
             alt={model.title}
@@ -44,12 +46,5 @@ const tag = model.tags[0];
       )
     }
 
-    {
-      tag && (
-        <div class="mt-auto inline-flex self-start items-center gap-2 rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-widest text-slate-300">
-          <span class="text-sky-200">#{tag}</span>
-        </div>
-      )
-    }
   </div>
 </a>

@@ -8,7 +8,6 @@ export interface ContentCardModel {
   title: string;
   date: Date;
   image?: string;
-  tags: string[];
   statusLabel?: string;
   actionLabel: string;
   rating?: number;
@@ -27,7 +26,6 @@ export interface CollectionDescriptor {
 
 export interface ContentDetailModel {
   collectionLabel: string;
-  tags: string[];
   rating?: number;
   heroImage: boolean;
   bodyImage: boolean;
@@ -38,26 +36,26 @@ export const collectionDescriptors: Record<SiteCollection, CollectionDescriptor>
     label: 'Blog',
     cardVariant: 'standard',
     actionLabel: 'Read Review →',
-    detail: { collectionLabel: 'blog', tags: [], heroImage: true, bodyImage: false },
+    detail: { collectionLabel: 'blog', heroImage: true, bodyImage: false },
   },
   art: {
     label: 'Art',
     cardVariant: 'art',
     actionLabel: 'View Artwork →',
-    detail: { collectionLabel: 'art', tags: [], heroImage: false, bodyImage: false },
+    detail: { collectionLabel: 'art', heroImage: false, bodyImage: false },
   },
   reading: {
     label: 'Reading',
     cardVariant: 'standard',
     actionLabel: 'View Progress →',
     showReadingStatus: true,
-    detail: { collectionLabel: 'reading', tags: [], heroImage: false, bodyImage: true },
+    detail: { collectionLabel: 'reading', heroImage: false, bodyImage: true },
   },
   games: {
     label: 'Games',
     cardVariant: 'standard',
     actionLabel: 'View Progress →',
-    detail: { collectionLabel: 'games', tags: [], heroImage: true, bodyImage: false },
+    detail: { collectionLabel: 'games', heroImage: true, bodyImage: false },
   },
 };
 
@@ -82,15 +80,10 @@ export function getEntryHref(collection: SiteCollection, slug: string) {
   return `/${collection}/${slug}`;
 }
 
-export function getTags(entry: SiteEntry) {
-  return 'tags' in entry.data ? entry.data.tags : [];
-}
-
 export function getContentCardModel(
   entry: SiteEntry,
   collection: SiteCollection,
 ): ContentCardModel {
-  const tags = getTags(entry);
   const rating = 'rating' in entry.data ? entry.data.rating : undefined;
   const dateFinished =
     'dateFinished' in entry.data ? entry.data.dateFinished : undefined;
@@ -101,7 +94,6 @@ export function getContentCardModel(
     title: entry.data.title,
     date: dateFinished ?? entry.data.date,
     image: entry.data.image,
-    tags,
     statusLabel:
       descriptor.showReadingStatus && !dateFinished ? 'Reading' : undefined,
     actionLabel: dateFinished ? 'Read Review →' : descriptor.actionLabel,
@@ -118,7 +110,6 @@ export function getContentDetailModel(
   return {
     ...descriptor.detail,
     collectionLabel: descriptor.label,
-    tags: getTags(entry),
     rating: collection === 'reading' ? entry.data.rating : undefined,
   };
 }

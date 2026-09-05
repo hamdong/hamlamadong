@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import SidebarBox from '../components/SidebarBox.astro';
-import LatestCard from '../components/LatestCard.astro';
+import ContentPanel from '../components/ContentPanel.astro';
+import LatestContentCard from '../components/LatestContentCard.astro';
 import {
   getContentCardModel,
   isPublished,
@@ -26,9 +26,9 @@ const latestPosts = sortByDate(
 
 <Layout>
   <!-- Welcome Section -->
-  <section class="content-panel mb-12 p-6 sm:p-8">
+  <section class="mb-12 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/30 p-6 shadow-xl shadow-slate-950/10 backdrop-blur-xl sm:p-8">
     <div class="space-y-4">
-      <h2>Welcome</h2>
+      <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Welcome</h2>
       <p>
         Welcome to my personal website! This place is meant to serve as a secret
         getaway for myself, separate from other ongoing projects that may have
@@ -58,21 +58,21 @@ const latestPosts = sortByDate(
       class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <h2>Latest Posts</h2>
+        <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Latest Posts</h2>
       </div>
     </div>
 
     <div class="mt-6 grid gap-5 md:grid-cols-2">
       {
         latestPosts.map((post) => (
-          <LatestCard model={getContentCardModel(post, post.collection)} />
+          <LatestContentCard model={getContentCardModel(post, post.collection)} />
         ))
       }
     </div>
   </section>
 
   <!-- Misc Section -->
-  <SidebarBox title="OTHER STUFF">
+  <ContentPanel title="OTHER STUFF">
     <div class="space-y-4">
       <div>
         <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">
@@ -93,5 +93,5 @@ const latestPosts = sortByDate(
         <p class="text-sm">Rebuilding & redesigning this space</p>
       </div>
     </div>
-  </SidebarBox>
+  </ContentPanel>
 </Layout>

@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import TagFilter from './TagFilter.astro';
-import PostCard from './PostCard.astro';
+import ContentCard from './ContentCard.astro';
 import ArtCard from './ArtCard.astro';
 import {
   getContentCardModel,
@@ -21,23 +20,15 @@ const posts = (await getCollection(collectionName))
   .filter((p) => isPublished(p, import.meta.env.PROD))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const allTags = [
-  ...new Set(
-    posts.flatMap((p) => getContentCardModel(p, collectionName).tags),
-  ),
-].sort();
-
 const Card = collectionDescriptors[collectionName].cardVariant === 'art'
   ? ArtCard
-  : PostCard;
+  : ContentCard;
 ---
 
 <div class="w-full">
   <header class="mb-8 flex items-end justify-between border-b border-white/10 pb-4">
-    <h2>{title}</h2>
+    <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{title}</h2>
   </header>
-
-  {allTags.length > 0 && <TagFilter tags={allTags} />}
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
     {
@@ -55,9 +46,3 @@ const Card = collectionDescriptors[collectionName].cardVariant === 'art'
     )
   }
 </div>
-
-<style>
-  .post-item.hidden {
-    display: none;
-  }
-</style>

@@ -10,11 +10,10 @@ const { model } = Astro.props;
 
 <a
   href={model.href}
-  data-tags={model.tags.join(',')}
-  class="post-item group content-card flex h-full flex-col"
+  class="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-950/30 shadow-xl shadow-slate-950/10 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-200/40 hover:bg-slate-900/35 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200"
 >
   <div
-    class="content-card__image aspect-[16/10]"
+    class="aspect-[16/10] overflow-hidden border-b border-white/10 bg-slate-950/40"
   >
     {
       model.image && (
@@ -63,10 +62,5 @@ const { model } = Astro.props;
       }
     </div>
 
-    <div
-      class="mt-auto inline-flex items-center gap-2 self-start rounded-full border border-slate-200/10 bg-white/5 px-3 py-1 font-mono text-xs uppercase tracking-widest text-slate-300"
-    >
-      {model.tags[0] && <span class="text-sky-200">#{model.tags[0]}</span>}
-    </div>
   </div>
 </a>

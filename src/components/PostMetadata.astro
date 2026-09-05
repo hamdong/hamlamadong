@@ -23,21 +23,9 @@ const stars =
       }).replace(/\//g, '.')}
     </time>
 
-    {
-      model.tags.length > 0 ? (
-        <div class="flex flex-wrap gap-3">
-          {model.tags.map((tag) => (
-            <span class="font-pixel text-sm uppercase tracking-wide text-sky-200">
-              #{tag}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <span class="font-pixel text-sm uppercase tracking-wide text-slate-400">
-          {model.collectionLabel}
-        </span>
-      )
-    }
+    <span class="font-pixel text-sm uppercase tracking-wide text-slate-400">
+      {model.collectionLabel}
+    </span>
   </div>
 
   <slot name="title" />
