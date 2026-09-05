@@ -1,11 +1,13 @@
 ---
 import type { ContentCardModel } from '../lib/content';
+import { formatDate } from '../lib/date';
 
 interface Props {
   model: ContentCardModel;
 }
 
 const { model } = Astro.props;
+const formattedDate = formatDate(model.date);
 ---
 
 <a
@@ -18,8 +20,16 @@ const { model } = Astro.props;
       <img
         src={model.image}
         alt={model.title}
+        loading="lazy"
+        decoding="async"
         class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
       />
     </div>
   )}
+  <div class="flex items-baseline justify-between gap-3 border-t border-white/10 px-4 py-3">
+    <h3 class="truncate text-sm font-semibold text-white transition-colors group-hover:text-sky-200">
+      {model.title}
+    </h3>
+    <time class="shrink-0 font-mono text-[0.68rem] text-slate-400">{formattedDate}</time>
+  </div>
 </a>

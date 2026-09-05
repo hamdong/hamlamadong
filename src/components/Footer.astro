@@ -1,6 +1,8 @@
 ---
+import { formatDate } from '../lib/date';
+
 const currentYear = new Date().getFullYear();
-const currentDate = new Date().toLocaleDateString('en-US').replace(/\//g, '.');
+const currentDate = formatDate(new Date());
 ---
 
 <footer class="border-t border-white/10 py-6">

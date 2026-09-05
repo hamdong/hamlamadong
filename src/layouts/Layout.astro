@@ -16,6 +16,9 @@ const navLinks = [
 
 const navClass =
   'font-pixel text-base text-sky-200 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200 sm:text-lg';
+
+const isActiveRoute = (href: string) =>
+  href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href);
 ---
 
 <html lang="en" class="scroll-smooth overflow-y-scroll">
@@ -51,7 +54,13 @@ const navClass =
             class="flex flex-wrap items-center gap-x-5 gap-y-2"
           >
             {navLinks.map((link) => (
-              <a href={link.href} class={navClass}>{link.label}</a>
+              <a
+                href={link.href}
+                class={`${navClass} ${isActiveRoute(link.href) ? 'text-white' : ''}`}
+                aria-current={isActiveRoute(link.href) ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
             ))}
           </nav>
         </div>

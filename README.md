@@ -1,42 +1,28 @@
 # Hamlamadong
 
-My personal blog website.
+My personal corner of the internet for writing, artwork, games, and books.
 
-## Tech Stack
+Built with Astro, Tailwind, Markdown content collections, Sveltia CMS, and Cloudflare R2.
 
-- **Framework**: Astro 4.x
-- **CMS**: Sveltia
-- **Styling**: Tailwind CSS v4=
-
-## 🚀 Project Structure
+## Project map
 
 ```text
-/
-├── public/
-│   ├── admin/          # CMS configuration
-│   └── assets/         # Static assets
-├── src/
-│   ├── components/     # Reusable Astro components
-│   ├── content/        # Markdown blog posts
-│   ├── layouts/        # Layout templates
-│   ├── pages/          # Route pages
-│   └── styles/         # Global styles
-├── astro.config.mjs    # Astro configuration
-├── tsconfig.json       # TypeScript configuration
-└── package.json        # Project dependencies
+public/          Static files and CMS configuration
+src/components/  Reusable UI
+src/content/     Blog, art, games, and reading entries
+src/layouts/     Shared page layouts
+src/lib/         Content and formatting helpers
+src/pages/       Site routes
 ```
 
-## 🧞 Commands
+## Commands
 
-All commands are run from the root of the project:
+```bash
+npm install
+npm run dev      # Start the local site
+npm run check    # Check Astro and TypeScript diagnostics
+npm run build    # Build the static site
+npm run preview  # Preview the build
+```
 
-| Command           | Action                                     |
-| :---------------- | :----------------------------------------- |
-| `npm install`     | Install dependencies                       |
-| `npm run dev`     | Start local dev server at `localhost:4321` |
-| `npm run build`   | Build production site to `./dist/`         |
-| `npm run preview` | Preview build locally before deploying     |
-
-## 📝 License
-
-Built with Astro. See [astro.build](https://astro.build) for more information.
+Content schemas live in `src/content/config.ts`, and the Sveltia setup is in `public/admin/config.yml`. Tags are still available in the CMS, although they are not currently shown on the site.

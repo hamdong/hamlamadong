@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
 
 export type SiteCollection = 'blog' | 'art' | 'reading' | 'games';
+export type StandardCollection = Exclude<SiteCollection, 'art'>;
 export type SiteEntry = CollectionEntry<SiteCollection>;
 
 export interface ContentCardModel {
@@ -63,11 +64,11 @@ export function isPublished(entry: SiteEntry, isProduction: boolean) {
   return !isProduction || !entry.data.draft;
 }
 
-export function getSiteCollectionEntries(collection: SiteCollection) {
+export function getSiteCollectionEntries<T extends SiteCollection>(collection: T) {
   return getCollection(collection);
 }
 
-export async function getSiteCollectionPaths(collection: SiteCollection) {
+export async function getSiteCollectionPaths<T extends SiteCollection>(collection: T) {
   const entries = await getSiteCollectionEntries(collection);
 
   return entries.map((entry) => ({
@@ -110,7 +111,10 @@ export function getContentDetailModel(
   return {
     ...descriptor.detail,
     collectionLabel: descriptor.label,
-    rating: collection === 'reading' ? entry.data.rating : undefined,
+    rating:
+      collection === 'reading' && 'rating' in entry.data
+        ? entry.data.rating
+        : undefined,
   };
 }
 

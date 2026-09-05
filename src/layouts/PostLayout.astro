@@ -5,13 +5,12 @@ import PostMedia from '../components/PostMedia.astro';
 import PostMetadata from '../components/PostMetadata.astro';
 import {
   getContentDetailModel,
-  type SiteCollection,
-  type SiteEntry,
+  type StandardCollection,
 } from '../lib/content';
 
 interface Props {
-  entry: Exclude<SiteEntry, CollectionEntry<'art'>>;
-  collectionName: Exclude<SiteCollection, 'art'>;
+  entry: CollectionEntry<StandardCollection>;
+  collectionName: StandardCollection;
 }
 
 const { entry, collectionName } = Astro.props;

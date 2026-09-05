@@ -1,5 +1,6 @@
 ---
 import type { ContentDetailModel } from '../lib/content';
+import { formatDate } from '../lib/date';
 
 interface Props {
   model: ContentDetailModel;
@@ -16,11 +17,7 @@ const stars =
 <div class="mb-8 border-b border-white/10 pb-6">
   <div class="mb-5 flex flex-wrap items-center gap-4 text-slate-300">
     <time class="font-mono text-xs uppercase tracking-widest text-slate-200">
-      {date.toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-      }).replace(/\//g, '.')}
+      {formatDate(date)}
     </time>
 
     <span class="font-pixel text-sm uppercase tracking-wide text-slate-400">

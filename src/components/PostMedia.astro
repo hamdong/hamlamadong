@@ -13,13 +13,25 @@ if (!src) return;
   placement === 'hero' ? (
     <div class="mx-auto mt-8 max-w-5xl px-4 sm:px-6">
       <div class="h-56 overflow-hidden rounded-3xl border border-white/10 shadow-xl sm:h-64 lg:h-72">
-        <img src={src} alt={alt} class="h-full w-full object-cover" />
+        <img
+          src={src}
+          alt={alt}
+          loading={placement === 'hero' ? 'eager' : 'lazy'}
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
       </div>
     </div>
   ) : (
     <div class="float-right mb-4 ml-6 w-32 sm:w-40 lg:w-48">
       <div class="h-56 overflow-hidden rounded-2xl border border-slate-200/15 bg-slate-900/65 shadow-lg">
-        <img src={src} alt={alt} class="h-full w-full object-cover" />
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
       </div>
     </div>
   )
