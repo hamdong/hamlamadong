@@ -20,10 +20,15 @@ const formattedDate = new Date(entry.data.date)
 
 <div
   id="art-modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="art-modal-title"
+  tabindex="-1"
   class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-950/85 backdrop-blur-md overflow-y-auto"
 >
   <!-- Close Button (Routes back to main grid) -->
   <a
+    id="art-modal-close"
     href="/art"
     class="fixed top-5 right-5 z-50 p-3 rounded-full bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 transition-all shadow-lg"
     aria-label="Close modal"
@@ -114,6 +119,7 @@ const formattedDate = new Date(entry.data.date)
       >
         <div>
           <h1
+            id="art-modal-title"
             class="text-2xl sm:text-3xl font-semibold text-white tracking-tight"
           >
             {entry.data.title}
@@ -196,22 +202,23 @@ const formattedDate = new Date(entry.data.date)
     const backdrop = document.getElementById('art-modal-backdrop');
     const card = document.getElementById('art-modal-card');
     if (!backdrop || !card) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
 
     const closeLink = backdrop.querySelector<HTMLAnchorElement>(
       'a[href="/art"]',
     );
     const onClick = (event: Event) => {
       const target = event.target;
-      if (target instanceof HTMLElement && !card.contains(target)) {
+      if (target === backdrop) {
         closeLink?.click();
       }
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') closeLink?.click();
-      if (event.key === 'ArrowLeft') {
+      if (event.key === 'ArrowLeft' && document.getElementById('prev-btn')) {
         document.getElementById('prev-btn')?.click();
       }
-      if (event.key === 'ArrowRight') {
+      if (event.key === 'ArrowRight' && document.getElementById('next-btn')) {
         document.getElementById('next-btn')?.click();
       }
     };
@@ -221,7 +228,11 @@ const formattedDate = new Date(entry.data.date)
     cleanup = () => {
       backdrop.removeEventListener('click', onClick);
       document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+      previouslyFocused?.focus();
     };
+    backdrop.focus();
+    document.body.style.overflow = 'hidden';
   }
 
   document.addEventListener('astro:page-load', initializeModal);

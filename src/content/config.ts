@@ -33,6 +33,7 @@ const art = defineCollection({
 const reading = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
+    status: z.enum(['Reading', 'Finished']).default('Finished'),
     dateFinished: z.preprocess(
       (val) => (val === '' || val === null ? undefined : val),
       z.coerce.date().optional(),

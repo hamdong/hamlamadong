@@ -9,11 +9,20 @@ export interface ContentCardModel {
   date: Date;
   image?: string;
   tags: string[];
-  variant: 'standard' | 'art';
   statusLabel?: string;
   actionLabel: string;
   rating?: number;
   description?: string;
+}
+
+export type ContentCardVariant = 'standard' | 'art';
+
+export interface CollectionDescriptor {
+  label: string;
+  cardVariant: ContentCardVariant;
+  actionLabel: string;
+  showReadingStatus?: boolean;
+  detail: ContentDetailModel;
 }
 
 export interface ContentDetailModel {
@@ -23,6 +32,34 @@ export interface ContentDetailModel {
   heroImage: boolean;
   bodyImage: boolean;
 }
+
+export const collectionDescriptors: Record<SiteCollection, CollectionDescriptor> = {
+  blog: {
+    label: 'Blog',
+    cardVariant: 'standard',
+    actionLabel: 'Read Review →',
+    detail: { collectionLabel: 'blog', tags: [], heroImage: true, bodyImage: false },
+  },
+  art: {
+    label: 'Art',
+    cardVariant: 'art',
+    actionLabel: 'View Artwork →',
+    detail: { collectionLabel: 'art', tags: [], heroImage: false, bodyImage: false },
+  },
+  reading: {
+    label: 'Reading',
+    cardVariant: 'standard',
+    actionLabel: 'View Progress →',
+    showReadingStatus: true,
+    detail: { collectionLabel: 'reading', tags: [], heroImage: false, bodyImage: true },
+  },
+  games: {
+    label: 'Games',
+    cardVariant: 'standard',
+    actionLabel: 'View Progress →',
+    detail: { collectionLabel: 'games', tags: [], heroImage: true, bodyImage: false },
+  },
+};
 
 export function isPublished(entry: SiteEntry, isProduction: boolean) {
   return !isProduction || !entry.data.draft;
@@ -57,8 +94,7 @@ export function getContentCardModel(
   const rating = 'rating' in entry.data ? entry.data.rating : undefined;
   const dateFinished =
     'dateFinished' in entry.data ? entry.data.dateFinished : undefined;
-  const isReading = collection === 'reading';
-  const isArt = collection === 'art';
+  const descriptor = collectionDescriptors[collection];
 
   return {
     href: getEntryHref(collection, entry.slug),
@@ -66,13 +102,9 @@ export function getContentCardModel(
     date: dateFinished ?? entry.data.date,
     image: entry.data.image,
     tags,
-    variant: isArt ? 'art' : 'standard',
-    statusLabel: isReading && !dateFinished ? 'Reading' : undefined,
-    actionLabel: isArt
-      ? 'View Artwork →'
-      : dateFinished || collection === 'blog'
-        ? 'Read Review →'
-        : 'View Progress →',
+    statusLabel:
+      descriptor.showReadingStatus && !dateFinished ? 'Reading' : undefined,
+    actionLabel: dateFinished ? 'Read Review →' : descriptor.actionLabel,
     rating: dateFinished ? rating : undefined,
     description: entry.data.description,
   };
@@ -82,14 +114,12 @@ export function getContentDetailModel(
   entry: SiteEntry,
   collection: SiteCollection,
 ): ContentDetailModel {
-  const isReading = collection === 'reading';
-
+  const descriptor = collectionDescriptors[collection];
   return {
-    collectionLabel: collection,
+    ...descriptor.detail,
+    collectionLabel: descriptor.label,
     tags: getTags(entry),
     rating: collection === 'reading' ? entry.data.rating : undefined,
-    heroImage: !isReading,
-    bodyImage: isReading,
   };
 }
 

@@ -1,12 +1,12 @@
 ---
-import { getCollection, type CollectionKey } from 'astro:content';
+import { getCollection } from 'astro:content';
 import TagFilter from './TagFilter.astro';
 import PostCard from './PostCard.astro';
 import ArtCard from './ArtCard.astro';
 import {
   getContentCardModel,
+  collectionDescriptors,
   isPublished,
-  isSiteCollection,
   type SiteCollection,
 } from '../lib/content';
 
@@ -18,7 +18,6 @@ interface Props {
 const { title, collectionName } = Astro.props;
 
 const posts = (await getCollection(collectionName))
-  .filter((p) => isSiteCollection(p.collection))
   .filter((p) => isPublished(p, import.meta.env.PROD))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -28,7 +27,9 @@ const allTags = [
   ),
 ].sort();
 
-const Card = collectionName === 'art' ? ArtCard : PostCard;
+const Card = collectionDescriptors[collectionName].cardVariant === 'art'
+  ? ArtCard
+  : PostCard;
 ---
 
 <div class="w-full">
@@ -60,33 +61,3 @@ const Card = collectionName === 'art' ? ArtCard : PostCard;
     display: none;
   }
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const filterButtons = document.querySelectorAll(
-      '.filter-btn',
-    ) as NodeListOf<HTMLButtonElement>;
-    const postItems = document.querySelectorAll(
-      '.post-item',
-    ) as NodeListOf<HTMLAnchorElement>;
-
-    filterButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const selectedFilter = button.dataset.filter ?? '';
-        filterButtons.forEach((btn) => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        postItems.forEach((post) => {
-          if (selectedFilter === 'all') {
-            post.classList.remove('hidden');
-          } else {
-            const postTags = (post.dataset.tags ?? '')
-              .split(',')
-              .filter(Boolean);
-            post.classList.toggle('hidden', !postTags.includes(selectedFilter));
-          }
-        });
-      });
-    });
-  });
-</script>
