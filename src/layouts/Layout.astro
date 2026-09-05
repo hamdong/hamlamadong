@@ -2,9 +2,6 @@
 import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import InteractiveGrass from '../components/InteractiveGrass.astro';
-import CloudLayer from '../components/CloudLayer.astro';
-import FishTank from '../components/FishTank.astro';
 
 const { title = 'Hamlamadong' } = Astro.props;
 const navLinks = [
@@ -31,41 +28,29 @@ const navActive = 'text-sky-200 hover:text-white';
       rel="stylesheet"
     />
   </head>
-  <body class="relative min-h-screen">
-    <CloudLayer />
+  <body class="min-h-screen">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-container flex flex-wrap items-center justify-between gap-5">
+          <a href="/" class="brand-mark" aria-label="Hamlamadong home">
+            <span class="brand-mark__orb" aria-hidden="true"></span>
+            <span>HAMLAMADONG</span>
+          </a>
+          <nav aria-label="Primary navigation" class="site-nav">
+            {navLinks.map((link) => (
+              <a href={link.href} class={`${navBase} ${navActive}`}>{link.label}</a>
+            ))}
+          </nav>
+        </div>
+      </header>
 
-    <div class="relative mx-auto max-w-7xl px-3 sm:px-4 pt-6 pb-10">
-      <div class="mx-auto max-w-5xl">
-        <header class="mb-8">
-          <div class="flex flex-col gap-4">
-            <div>
-              <h1
-                class="text-white text-3xl sm:text-4xl font-semibold uppercase tracking-widest"
-              >
-                <a href="/">HAMLAMADONG</a>
-              </h1>
-            </div>
-            <nav class="flex flex-wrap gap-3 sm:gap-4">
-              {
-                navLinks.map((link) => (
-                  <a href={link.href} class={`${navBase} ${navActive}`}>
-                    {link.label}
-                  </a>
-                ))
-              }
-            </nav>
-          </div>
-        </header>
+      <main class="site-container site-main">
+        <slot />
+      </main>
 
-        <main class="space-y-8">
-          <slot />
-        </main>
-
+      <div class="site-container">
         <Footer />
       </div>
     </div>
-
-    <FishTank />
-    <InteractiveGrass />
   </body>
 </html>

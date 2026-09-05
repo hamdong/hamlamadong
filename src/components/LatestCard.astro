@@ -9,7 +9,7 @@ const { model } = Astro.props;
 const tag = model.tags[0];
 ---
 
-<a href={model.href} class="group glass-card flex h-full flex-col">
+<a href={model.href} class="group content-card flex h-full flex-col">
   <div class="flex flex-1 flex-col gap-4 p-5">
     <div class="flex items-center justify-between gap-3">
       <span
@@ -28,11 +28,11 @@ const tag = model.tags[0];
 
     {
       model.image ? (
-        <div class="h-20 w-full shrink-0 overflow-hidden rounded border border-white/10 bg-slate-950/50">
+        <div class="content-card__image content-card__image--latest">
           <img
             src={model.image}
             alt={model.title}
-            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            class="h-full w-full object-cover"
           />
         </div>
       ) : (

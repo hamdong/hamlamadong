@@ -11,17 +11,17 @@ const { model } = Astro.props;
 <a
   href={model.href}
   data-tags={model.tags.join(',')}
-  class="post-item group glass-card flex h-full flex-col"
+  class="post-item group content-card flex h-full flex-col"
 >
   <div
-    class="relative h-48 overflow-hidden border-b border-slate-200/15 bg-slate-950/30"
+    class="content-card__image aspect-[16/10]"
   >
     {
       model.image && (
         <img
           src={model.image}
           alt={model.title}
-          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          class="h-full w-full object-cover"
         />
       )
     }
