@@ -9,6 +9,7 @@ backend:
 
 media_library:
   name: cloudflare_r2
+  bucket: 'hamlamadong-media'
 
 # https://sveltiacms.app/en/docs/media/cloudflare-r2#configuration-properties
 media_libraries:
