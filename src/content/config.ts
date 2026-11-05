@@ -24,7 +24,7 @@ const art = defineCollection({
   }),
 });
 
-const reading = defineCollection({
+const books = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
     rating: z.preprocess(
@@ -44,4 +44,4 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { blog, art, reading, games };
+export const collections = { blog, art, books, games };

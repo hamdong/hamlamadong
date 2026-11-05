@@ -9,7 +9,7 @@ Built with Astro, Tailwind, Markdown content collections, Sveltia CMS, and Cloud
 ```text
 public/          Static files and CMS configuration
 src/components/  Reusable UI
-src/content/     Blog, art, games, and reading entries
+src/content/     Blog, art, books, and games entries
 src/layouts/     Shared page layouts
 src/lib/         Content and formatting helpers
 src/pages/       Site routes

@@ -1,6 +1,6 @@
 import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
 
-export type SiteCollection = 'blog' | 'art' | 'reading' | 'games';
+export type SiteCollection = 'blog' | 'art' | 'books' | 'games';
 export type StandardCollection = Exclude<SiteCollection, 'art'>;
 export type SiteEntry = CollectionEntry<SiteCollection>;
 
@@ -43,11 +43,11 @@ export const collectionDescriptors: Record<SiteCollection, CollectionDescriptor>
     actionLabel: 'View Artwork →',
     detail: { collectionLabel: 'art', heroImage: false, bodyImage: false },
   },
-  reading: {
-    label: 'Reading',
+  books: {
+    label: 'Books',
     cardVariant: 'standard',
     actionLabel: 'Read Review →',
-    detail: { collectionLabel: 'reading', heroImage: false, bodyImage: true },
+    detail: { collectionLabel: 'books', heroImage: false, bodyImage: true },
   },
   games: {
     label: 'Games',
@@ -106,7 +106,7 @@ export function getContentDetailModel(
     ...descriptor.detail,
     collectionLabel: descriptor.label,
     rating:
-      collection === 'reading' && 'rating' in entry.data
+      collection === 'books' && 'rating' in entry.data
         ? entry.data.rating
         : undefined,
   };
@@ -121,5 +121,5 @@ export function sortByDate<T extends { data: { date: Date } }>(entries: T[]) {
 export function isSiteCollection(
   collection: CollectionKey,
 ): collection is SiteCollection {
-  return ['blog', 'art', 'reading', 'games'].includes(collection);
+  return ['blog', 'art', 'books', 'games'].includes(collection);
 }

@@ -9,15 +9,15 @@ import {
   sortByDate,
 } from '../lib/content';
 
-const [blogPosts, artPosts, readingPosts, gamesPosts] = await Promise.all([
+const [blogPosts, artPosts, booksPosts, gamesPosts] = await Promise.all([
   getCollection('blog'),
   getCollection('art'),
-  getCollection('reading'),
+  getCollection('books'),
   getCollection('games'),
 ]);
 
 const latestPosts = sortByDate(
-  [...blogPosts, ...artPosts, ...readingPosts, ...gamesPosts].filter((entry) =>
+  [...blogPosts, ...artPosts, ...booksPosts, ...gamesPosts].filter((entry) =>
     isPublished(entry, import.meta.env.PROD),
   ),
 )

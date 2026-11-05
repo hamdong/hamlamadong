@@ -3,13 +3,13 @@ import PostLayout from '../../layouts/PostLayout.astro';
 import { getSiteCollectionPaths } from '../../lib/content';
 
 export async function getStaticPaths() {
-  return getSiteCollectionPaths('reading');
+  return getSiteCollectionPaths('books');
 }
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
 
-<PostLayout entry={entry} collectionName="reading">
+<PostLayout entry={entry} collectionName="books">
   <Content />
 </PostLayout>

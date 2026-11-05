@@ -64,9 +64,9 @@ collections:
         }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
 
-  - name: 'reading'
-    label: 'Reading List'
-    folder: 'src/content/reading'
+  - name: 'books'
+    label: 'Books'
+    folder: 'src/content/books'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     fields:
