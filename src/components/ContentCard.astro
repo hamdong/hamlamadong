@@ -33,13 +33,6 @@ const { model } = Astro.props;
         {formatDate(model.date)}
       </time>
 
-      {
-        model.statusLabel && (
-          <span class="animate-pulse font-mono text-xs uppercase tracking-wide text-sky-200">
-            {model.statusLabel}
-          </span>
-        )
-      }
     </div>
 
     <h3

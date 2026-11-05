@@ -9,7 +9,6 @@ export interface ContentCardModel {
   title: string;
   date: Date;
   image?: string;
-  statusLabel?: string;
   actionLabel: string;
   rating?: number;
   description?: string;
@@ -21,7 +20,6 @@ export interface CollectionDescriptor {
   label: string;
   cardVariant: ContentCardVariant;
   actionLabel: string;
-  showReadingStatus?: boolean;
   detail: ContentDetailModel;
 }
 
@@ -36,7 +34,7 @@ export const collectionDescriptors: Record<SiteCollection, CollectionDescriptor>
   blog: {
     label: 'Blog',
     cardVariant: 'standard',
-    actionLabel: 'Read Review →',
+    actionLabel: 'Read Article →',
     detail: { collectionLabel: 'blog', heroImage: true, bodyImage: false },
   },
   art: {
@@ -48,14 +46,13 @@ export const collectionDescriptors: Record<SiteCollection, CollectionDescriptor>
   reading: {
     label: 'Reading',
     cardVariant: 'standard',
-    actionLabel: 'View Progress →',
-    showReadingStatus: true,
+    actionLabel: 'Read Review →',
     detail: { collectionLabel: 'reading', heroImage: false, bodyImage: true },
   },
   games: {
     label: 'Games',
     cardVariant: 'standard',
-    actionLabel: 'View Progress →',
+    actionLabel: 'Read Review →',
     detail: { collectionLabel: 'games', heroImage: true, bodyImage: false },
   },
 };
@@ -86,20 +83,17 @@ export function getContentCardModel(
   collection: SiteCollection,
 ): ContentCardModel {
   const rating = 'rating' in entry.data ? entry.data.rating : undefined;
-  const dateFinished =
-    'dateFinished' in entry.data ? entry.data.dateFinished : undefined;
   const descriptor = collectionDescriptors[collection];
 
   return {
     href: getEntryHref(collection, entry.slug),
     title: entry.data.title,
-    date: dateFinished ?? entry.data.date,
+    date: entry.data.date,
     image: entry.data.image,
-    statusLabel:
-      descriptor.showReadingStatus && !dateFinished ? 'Reading' : undefined,
-    actionLabel: dateFinished ? 'Read Review →' : descriptor.actionLabel,
-    rating: dateFinished ? rating : undefined,
-    description: entry.data.description,
+    actionLabel: descriptor.actionLabel,
+    rating,
+    description:
+      'description' in entry.data ? entry.data.description : undefined,
   };
 }
 

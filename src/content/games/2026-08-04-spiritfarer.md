@@ -1,12 +1,9 @@
 ---
 title: Spiritfarer
 date: 2026-08-03T22:57
-platform: Switch
-status: 100% Cleared
 rating: 5
 image: /assets/spiritfarer-keyart-hero-4080606224.jpg
 draft: false
-description: I 100% completed Spiritfarer this week and wanted to get my thoughts down.
 ---
 
 Spiritfarer is a game that I did not expect to love as much as I did. On the surface it is a cozy farming game with animal buddies that you take around the world on a boat. Beneath its depths, however, I found an emotional story with compelling characters that had me tearing up every time we came to the Everdoor.

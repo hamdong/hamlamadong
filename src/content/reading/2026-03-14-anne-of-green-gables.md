@@ -1,12 +1,9 @@
 ---
 title: Anne of Green Gables
 date: 2026-03-14T16:45:00
-status: Reading
-dateFinished: ''
 rating: null
 image: /assets/anne_of_green_gables.jpg
 draft: false
-description: Absolutely wonderful.
 ---
 
 I'm still reading this book but it's been a joy to go through. I've known about the series my whole life, but my only exposure to Anne of Green Gables was the classic cartoon show that used to air on Teletoon. I never thought I'd love a book as much as this and I'm only halfway through it. There's something charmingly human about this book, both in its story and the way it is written. The narration is outright comedic sometimes, but describes things clearly and thoughtfully, while inserting a bit of a joke every now and then. The story is simple yet captivating and it's paced perfectly. So far, nothing has felt like it overstayed its welcome.

@@ -1,12 +1,9 @@
 ---
 title: Final Fantasy Resonance
 date: 2026-11-01T15:18:00
-platform: Switch
-status: Playing
 rating: 5
 image: /assets/final-fantasy-resonance.jpg
 draft: false
-description: The new Final Fantasy game that calls back to the glory days.
 ---
 
 If there was any one game to take me by surprise this year it was Final Fantasy Resonance. This is a game that hearkens back to the franchise's 2D days on the Super Famicom, complete with a cast of original characters embarking on a quest to save the world from the dreaded Sworn Six as they attempt to throw the world out of balance by destroying its Crystals. In this world, the player's party will travel to many distinct lands, battling monsters along the way, finding secrets, and uncovering the mystery of Arcwitch Fina, shown on the cover of the box. I'm more than halfway through the main campaign of the game and I gotta say at this point, I feel confident is calling this my game of the year for 2026.

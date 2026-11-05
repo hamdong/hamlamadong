@@ -3,7 +3,6 @@ import { defineCollection, z } from 'astro:content';
 const baseSchema = z.object({
   title: z.string(),
   date: z.coerce.date(),
-  description: z.string().optional(),
   draft: z.boolean().default(false),
   image: z
     .string()
@@ -14,7 +13,7 @@ const baseSchema = z.object({
 const blog = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
-    tags: z.array(z.string()).default(['Journal']),
+    description: z.string().optional(),
   }),
 });
 
@@ -22,22 +21,12 @@ const art = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
     image: z.string(),
-    tags: z.array(z.string()).default(['Art']),
-    medium: z
-      .enum(['Digital', 'Traditional', 'Photography'])
-      .default('Digital'),
-    tools: z.array(z.string()).optional(),
   }),
 });
 
 const reading = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
-    status: z.enum(['Reading', 'Finished']).default('Finished'),
-    dateFinished: z.preprocess(
-      (val) => (val === '' || val === null ? undefined : val),
-      z.coerce.date().optional(),
-    ),
     rating: z.preprocess(
       (val) => (val === '' || val === null ? undefined : val),
       z.number().min(1).max(5).optional(),
@@ -48,12 +37,6 @@ const reading = defineCollection({
 const games = defineCollection({
   type: 'content',
   schema: baseSchema.extend({
-    platform: z
-      .enum(['PC', 'PS5', 'Xbox', 'Switch', 'Mobile', 'Retro'])
-      .default('PC'),
-    status: z
-      .enum(['Playing', 'Completed', '100% Cleared', 'Backlog', 'Dropped'])
-      .default('Completed'),
     rating: z.preprocess(
       (val) => (val === '' || val === null ? undefined : val),
       z.number().min(1).max(5).optional(),

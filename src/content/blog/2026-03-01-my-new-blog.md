@@ -4,8 +4,6 @@ date: 2026-03-01T14:09:00
 description: First blog post test.
 image: /assets/banner_image_1.png
 draft: false
-tags:
-  - Journal
 ---
 
 This is the first blog post I've written for this site. I did it using Sveltia CMS, which is an open-source CMS that doesn't seem to utilize a database. All of the data is converted into markdown files in the repo and then loaded into the app on startup. It's kind of neat and perfect for what I'm looking for since this is meant to be a personal blog that likely won't scale to be that large. I mean, who knows? Maybe I'll grow this into being something bigger but right now it fits what I'm looking for and it's some pretty cool technology.

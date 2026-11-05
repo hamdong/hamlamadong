@@ -4,8 +4,6 @@ date: 2026-06-30T16:44
 description: Talking about some reflections with the AI push that's been happening for a while now.
 image: /assets/banner_image_1.png
 draft: false
-tags:
-  - Journal
 ---
 
 It's a bit of a divisive topic depending on who you ask, but one thing is for certain: AI is changing the development landscape. I've gotten pretty good at wielding it, and fortunately I work a job where I have the privilege to access some of the more advanced AI tooling for productivity. I've also seen the downsides of it (and believe me, there are _a lot_ of downsides), but a lot of that I chalk up to a lack of experience from people who use it. In my opinion, generative AI and its related tooling are great resources that can help speed up processes that would traditionally take much longer to complete. I'm not afraid to admit I wouldn't have been able to get this website up and running so fast without it.

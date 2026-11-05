@@ -4,8 +4,6 @@ date: 2026-05-17T12:54:00
 description: Just going over some thoughts on my recent musical audition.
 image: /assets/banner_image_1.png
 draft: false
-tags:
-  - Journal
 ---
 
 I never would have in a million years guessed I would apply for a musical audition, but this week I had the privilege of attending one and simply put, it was a lot of fun. I had a chance to learn the process, meet some cool and talented people, a be a part of something that was clearly passion-driven.

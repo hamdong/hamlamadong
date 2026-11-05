@@ -32,16 +32,21 @@ collections:
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Publish Date', name: 'date', widget: 'datetime' }
-      - { label: 'Description', name: 'description', widget: 'string' }
       - {
           label: 'Featured Image',
           name: 'image',
           widget: 'image',
           required: false,
         }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: true }
-      - { label: 'Tags', name: 'tags', widget: 'list', default: ['Journal'] }
       - { label: 'Body', name: 'body', widget: 'markdown' }
+      - {
+          label: 'Card Excerpt (optional)',
+          name: 'description',
+          widget: 'string',
+          required: false,
+          hint: 'Shown on the latest-post card when no featured image is set.',
+        }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: true }
 
   - name: 'art'
     label: 'Art'
@@ -57,28 +62,7 @@ collections:
           widget: 'image',
           required: true,
         }
-      - {
-          label: 'Medium / Type',
-          name: 'medium',
-          widget: 'select',
-          options: ['Digital', 'Traditional', 'Photography'],
-          default: 'Digital',
-        }
-      - {
-          label: 'Tools',
-          name: 'tools',
-          widget: 'list',
-          required: false,
-        }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - { label: 'Tags', name: 'tags', widget: 'list', default: ['Art'] }
-      - {
-          label: 'Caption',
-          name: 'description',
-          widget: 'string',
-          required: false,
-        }
-      - { label: 'Notes', name: 'body', widget: 'markdown', required: false }
 
   - name: 'reading'
     label: 'Reading List'
@@ -88,19 +72,8 @@ collections:
     fields:
       - { label: 'Book Title', name: 'title', widget: 'string' }
       - { label: 'Post Date', name: 'date', widget: 'datetime' }
-      - {
-          label: 'Status',
-          name: 'status',
-          widget: 'select',
-          options: ['Reading', 'Finished'],
-          default: 'Finished',
-        }
-      - {
-          label: 'Date Finished',
-          name: 'dateFinished',
-          widget: 'datetime',
-          required: false,
-        }
+      - { label: 'Book Cover', name: 'image', widget: 'image', required: false }
+      - { label: 'Your Thoughts (Body)', name: 'body', widget: 'markdown' }
       - {
           label: 'Rating (1-5)',
           name: 'rating',
@@ -109,20 +82,7 @@ collections:
           max: 5,
           required: false,
         }
-      - { label: 'Book Cover', name: 'image', widget: 'image', required: false }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - {
-          label: 'Short Review',
-          name: 'description',
-          widget: 'string',
-          required: false,
-        }
-      - {
-          label: 'Your Thoughts (Body)',
-          name: 'body',
-          widget: 'markdown',
-          required: false,
-        }
 
   - name: 'games'
     label: 'Games'
@@ -133,20 +93,12 @@ collections:
       - { label: 'Game Title', name: 'title', widget: 'string' }
       - { label: 'Post Date', name: 'date', widget: 'datetime' }
       - {
-          label: 'Platform',
-          name: 'platform',
-          widget: 'select',
-          options: ['PC', 'PS5', 'Xbox', 'Switch', 'Mobile', 'Retro'],
-          default: 'PC',
+          label: 'Game Art / Screenshot',
+          name: 'image',
+          widget: 'image',
+          required: false,
         }
-      - {
-          label: 'Status',
-          name: 'status',
-          widget: 'select',
-          options:
-            ['Playing', 'Completed', '100% Cleared', 'Backlog', 'Dropped'],
-          default: 'Completed',
-        }
+      - { label: 'Your Review (Body)', name: 'body', widget: 'markdown' }
       - {
           label: 'Rating (1-5)',
           name: 'rating',
@@ -155,22 +107,4 @@ collections:
           max: 5,
           required: false,
         }
-      - {
-          label: 'Game Art / Screenshot',
-          name: 'image',
-          widget: 'image',
-          required: false,
-        }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - {
-          label: 'Brief Summary',
-          name: 'description',
-          widget: 'string',
-          required: false,
-        }
-      - {
-          label: 'Your Review (Body)',
-          name: 'body',
-          widget: 'markdown',
-          required: false,
-        }

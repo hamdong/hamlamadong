@@ -1,12 +1,9 @@
 ---
 title: Dissidia Duellum Final Fantasy
 date: 2026-03-28T16:00:00
-platform: Mobile
-status: Playing
 rating: 4
 image: /assets/dissidia_duellum.png
 draft: false
-description: They turned Final Fantasy Dissidia into a MOBA for you phone and I hate that it works so well.
 ---
 
 Of all the games that could have debuted this collection on my website I never would have guessed it would be a _Dissidia_ game of all things, let along the new mobile game. There was a lot of criticism directed at this game for it coming off as a cash-grab, watering down the longstanding Dissidia subseries to simple taps on a touchscreen. Little did I know how much fun the core gameplay would be, and while it is a far cry from the Dissidias of days gone by, there's a lot to love about this game.
