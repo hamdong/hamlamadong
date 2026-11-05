@@ -16,14 +16,14 @@ if (!src) return;
         <img
           src={src}
           alt={alt}
-          loading={placement === 'hero' ? 'eager' : 'lazy'}
+          loading="eager"
           decoding="async"
           class="h-full w-full object-cover"
         />
       </div>
     </div>
   ) : (
-    <div class="float-right mb-4 ml-6 w-32 sm:w-40 lg:w-48">
+    <div class="mx-auto mb-4 w-40 sm:float-right sm:ml-6 sm:w-40 lg:w-48">
       <div class="h-56 overflow-hidden rounded-2xl border border-slate-200/15 bg-slate-900/65 shadow-lg">
         <img
           src={src}

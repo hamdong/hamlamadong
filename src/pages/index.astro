@@ -26,9 +26,9 @@ const latestPosts = sortByDate(
 
 <Layout>
   <!-- Welcome Section -->
-  <section class="mb-12 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/30 p-6 shadow-xl shadow-slate-950/10 backdrop-blur-xl sm:p-8">
+  <section class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/30 p-5 shadow-xl shadow-slate-950/10 backdrop-blur-xl sm:mb-12 sm:p-8">
     <div class="space-y-4">
-      <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Welcome</h2>
+      <h2 class="text-[clamp(1.375rem,2.8vw,1.875rem)] font-semibold tracking-tight text-white">Welcome</h2>
       <p>
         Welcome to my personal website! This place is meant to serve as a secret
         getaway for myself, separate from other ongoing projects that may have
@@ -53,16 +53,16 @@ const latestPosts = sortByDate(
   </section>
 
   <!-- Latest Posts Section -->
-  <section class="mb-12">
+  <section class="mb-10 sm:mb-12">
     <div
       class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <h2 class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Latest Posts</h2>
+        <h2 class="text-[clamp(1.375rem,2.8vw,1.875rem)] font-semibold tracking-tight text-white">Latest Posts</h2>
       </div>
     </div>
 
-    <div class="mt-6 grid gap-5 md:grid-cols-2">
+    <div class="mt-5 grid gap-4 md:mt-6 md:grid-cols-2 md:gap-5">
       {
         latestPosts.map((post) => (
           <LatestContentCard model={getContentCardModel(post, post.collection)} />
