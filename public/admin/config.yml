@@ -4,7 +4,7 @@ backend:
   name: github
   repo: hamdong/hamlamadong
   branch: main
-  base_url: https://hamlamadong-auth.hamlamadong.workers.dev
+  base_url: https://hamlamadong.pages.dev
   auth_endpoint: /auth
 
 media_library:

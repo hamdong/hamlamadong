@@ -1,6 +1,6 @@
 # Hamlamadong
 
-My personal corner of the internet for writing, artwork, games, and books.
+My personal blog website.
 
 Built with Astro, Tailwind, Markdown content collections, Sveltia CMS, and Cloudflare R2.
 
@@ -25,4 +25,6 @@ npm run build    # Build the static site
 npm run preview  # Preview the build
 ```
 
-Content schemas live in `src/content/config.ts`, and the Sveltia setup is in `public/admin/config.yml`. Tags are still available in the CMS, although they are not currently shown on the site.
+Content schemas live in `src/content/config.ts`, and the Sveltia setup is in `public/admin/config.yml`.
+
+CMS GitHub authentication is handled by the Cloudflare Pages Functions in `functions/`.
