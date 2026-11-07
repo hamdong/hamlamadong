@@ -61,8 +61,9 @@ export function isPublished(entry: SiteEntry, isProduction: boolean) {
   return !isProduction || !entry.data.draft;
 }
 
-export function getSiteCollectionEntries<T extends SiteCollection>(collection: T) {
-  return getCollection(collection);
+export async function getSiteCollectionEntries<T extends SiteCollection>(collection: T) {
+  const entries = await getCollection(collection);
+  return entries.filter((entry) => isPublished(entry, import.meta.env.PROD));
 }
 
 export async function getSiteCollectionPaths<T extends SiteCollection>(collection: T) {

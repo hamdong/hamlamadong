@@ -1,10 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ArtModal from '../../components/ArtModal.astro';
+import { getSiteCollectionEntries } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const allArt = await getCollection('art');
+  const allArt = await getSiteCollectionEntries('art');
   return allArt.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry, allArt },
