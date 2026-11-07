@@ -1,5 +1,6 @@
 const stateCookieName = 'cms_oauth_state';
 const stateCookieMaxAge = 600;
+const allowedGitHubUserId = 105994376;
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -120,7 +121,6 @@ export default {
       if (!allowedDomainPatterns.length) {
         return new Response('OAuth is not configured', { status: 500 });
       }
-
       const origin = getAllowedOrigin(request, allowedDomainPatterns);
       if (!origin) return new Response('Forbidden', { status: 403 });
       if (!env.GITHUB_CLIENT_ID) {
@@ -150,7 +150,6 @@ export default {
     if (!allowedDomainPatterns.length) {
       return callbackError('OAuth is not configured', 500);
     }
-
     const code = url.searchParams.get('code');
     const returnedState = url.searchParams.get('state');
     const transaction = readStateCookie(request, allowedDomainPatterns);
@@ -191,13 +190,31 @@ export default {
       }
 
       result = await response.json();
-    } catch (error) {
-      console.error('GitHub OAuth token exchange failed', error);
-      return callbackError('GitHub token exchange failed', 502);
-    }
 
-    if (typeof result?.access_token !== 'string' || !result.access_token) {
-      return callbackError('GitHub token exchange failed', 502);
+      if (typeof result?.access_token !== 'string' || !result.access_token) {
+        return callbackError('GitHub token exchange failed', 502);
+      }
+
+      const userResponse = await fetch('https://api.github.com/user', {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${result.access_token}`,
+          'User-Agent': 'Hamlamadong-CMS',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+
+      if (!userResponse.ok) {
+        return callbackError('Unable to verify GitHub account', 502);
+      }
+
+      const user = await userResponse.json();
+      if (user?.id !== allowedGitHubUserId) {
+        return callbackError('This GitHub account is not authorized to use this CMS', 403);
+      }
+    } catch (error) {
+      console.error('GitHub OAuth verification failed', error);
+      return callbackError('Unable to verify GitHub account', 502);
     }
 
     const content = JSON.stringify({
